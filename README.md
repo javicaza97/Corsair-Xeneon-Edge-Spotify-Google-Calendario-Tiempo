@@ -64,18 +64,6 @@ xeneon-dashboard-local/
     └── .gitkeep
 ```
 
-Archivos que se generan localmente y **no deben subirse a GitHub**:
-
-```txt
-.env
-.venv/
-data/tokens.json
-data/oauth_states.json
-data/spotify_playlists_cache.json
-data/*.log
-data/*.pid
-```
-
 ---
 
 ## 3. Instalación del proyecto
