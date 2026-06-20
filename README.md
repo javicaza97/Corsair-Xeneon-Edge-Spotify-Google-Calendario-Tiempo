@@ -437,26 +437,8 @@ http://127.0.0.1:5051
 
 ---
 
-## 10. Limpieza antes de subir a GitHub
 
-Antes de publicar el repositorio, asegúrate de no subir:
-
-```txt
-.env
-.venv/
-data/tokens.json
-data/oauth_states.json
-data/spotify_playlists_cache.json
-data/*.log
-data/*.pid
-__pycache__/
-```
-
-El `.gitignore` incluido ya evita esos archivos.
-
----
-
-## 11. Archivos principales
+## 10. Archivos principales
 
 - `app.py`: backend Flask local.
 - `static/dashboard.html`: interfaz de XENEON.
@@ -470,12 +452,10 @@ El `.gitignore` incluido ya evita esos archivos.
 
 ---
 
-## 12. Notas de seguridad
+## 11. Notas de seguridad
 
 Este proyecto está pensado para uso local en tu PC. Por defecto escucha solo en:
 
 ```txt
 127.0.0.1
 ```
-
-No expongas el puerto a internet. No subas `.env` ni `data/tokens.json` a GitHub.
