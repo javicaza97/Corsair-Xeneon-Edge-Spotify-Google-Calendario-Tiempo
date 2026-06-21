@@ -401,6 +401,16 @@ La autenticación no se debe hacer desde el iframe. Para conectar cuentas usa si
 http://127.0.0.1:5050/setup
 ```
 
+Ejemplo de iframe:
+
+```txt
+<iframe
+  src="http://127.0.0.1:5050/dashboard.html"
+  style="width:100%; height:100%; border:0; overflow:hidden;"
+  allow="autoplay; clipboard-write"
+></iframe>
+```
+
 ---
 
 ## 10. Datos locales generados
@@ -440,138 +450,8 @@ http://127.0.0.1:5050/setup
 
 ---
 
-## 11. Actualizar el proyecto desde GitHub
 
-### 11.1 Si ya tienes el repositorio clonado
-
-Entra en la carpeta del proyecto:
-
-```powershell
-cd C:\XENEON-Dashboard
-```
-
-Comprueba cambios locales:
-
-```powershell
-git status
-```
-
-Descarga la última versión:
-
-```powershell
-git pull origin main
-```
-
-Si tu rama se llama `master`:
-
-```powershell
-git pull origin master
-```
-
-Después, si han cambiado dependencias:
-
-```bat
-install.bat
-```
-
-Y arranca de nuevo:
-
-```bat
-start_dashboard.bat
-```
-
-### 11.2 Si quieres subir cambios a tu repositorio GitHub
-
-Desde la carpeta del proyecto:
-
-```powershell
-git status
-```
-
-Añade cambios:
-
-```powershell
-git add .
-```
-
-Crea commit:
-
-```powershell
-git commit -m "Actualiza documentación y limpieza del proyecto"
-```
-
-Sube a GitHub:
-
-```powershell
-git push origin main
-```
-
-Si tu rama se llama `master`:
-
-```powershell
-git push origin master
-```
-
-### 11.3 Si todavía no está conectado a GitHub
-
-Inicializa Git:
-
-```powershell
-git init
-```
-
-Añade el remoto de GitHub:
-
-```powershell
-git remote add origin https://github.com/TU_USUARIO/TU_REPOSITORIO.git
-```
-
-Añade y sube:
-
-```powershell
-git add .
-git commit -m "Primera versión XENEON Dashboard"
-git branch -M main
-git push -u origin main
-```
-
----
-
-## 12. Limpieza antes de subir a GitHub
-
-Antes de hacer `git add .`, revisa:
-
-```powershell
-git status
-```
-
-No deben aparecer:
-
-```txt
-.env con credenciales reales
-data/tokens.json
-data/oauth_states.json
-data/*.log
-data/*.pid
-.venv/
-__pycache__/
-```
-
-Este repositorio incluye `.gitignore` para evitar subir esos ficheros.
-
-Si alguna vez Git ya había empezado a trackear un fichero sensible, no basta con `.gitignore`. Hay que sacarlo del índice:
-
-```powershell
-git rm --cached .env
-git rm --cached data/tokens.json
-git commit -m "Elimina credenciales locales del repositorio"
-```
-
-Si subiste tokens reales accidentalmente, revócalos desde Spotify/Google y vuelve a conectar la aplicación.
-
----
-
-## 13. Solución de problemas
+## 12. Solución de problemas
 
 ### El puerto 5050 no responde
 
@@ -647,17 +527,3 @@ Limpiar token Spotify
 Después vuelve a conectar Spotify.
 
 ---
-
-## 14. Seguridad
-
-- No subas `.env` con credenciales reales.
-- No subas `data/tokens.json`.
-- No compartas `GOOGLE_CLIENT_SECRET`.
-- Si publicas el proyecto en GitHub, revisa siempre `git status` antes de hacer commit.
-- Si se filtra un token, revócalo y genera uno nuevo.
-
----
-
-## 15. Licencia
-
-Añade aquí la licencia que quieras aplicar al proyecto antes de publicarlo oficialmente.
