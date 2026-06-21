@@ -341,7 +341,7 @@ body.playlist-dragging *{user-select:none !important;}
     <button class="btn green" onclick="window.open('/setup','_blank')">Abrir setup</button>
   </div>
   <div id="sp-app" style="display:none;min-height:0;flex:1;flex-direction:column;gap:9px">
-    <div class="sp-device"><span class="dot"></span><select class="sp-device-select" id="sp-device-select" onchange="spTransferDevice(this.value)"><option value="">Buscando dispositivos...</option></select><button class="icon-btn" title="Actualizar dispositivos" onclick="spLoadDevices()">↻</button></div>
+    <div class="sp-device"><span class="dot"></span><select class="sp-device-select" id="sp-device-select" onchange="spTransferDevice(this.value)"><option value="">Buscando dispositivos...</option></select><button class="icon-btn" title="Actualizar dispositivos" onclick="spLoadDevices(true)">↻</button></div>
     <div class="sp-main">
       <div class="art"><img id="sp-art" alt=""><div id="sp-bars" class="bars paused"><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span></div></div>
       <div class="sp-info">
@@ -581,9 +581,12 @@ function renderDeviceSelect(activeId = '') {
   const prev = sel.value;
   sel.innerHTML = '';
   if (!spDevices.length) {
+    const currentDevice = (spCurrent && spCurrent.device && spCurrent.device.id) ? spCurrent.device : null;
     const o = document.createElement('option');
-    o.value = '';
-    o.textContent = 'Abre Spotify en PC/móvil';
+    o.value = currentDevice ? currentDevice.id : '';
+    o.textContent = currentDevice
+      ? ('● ' + (currentDevice.name || 'Dispositivo activo') + (currentDevice.type ? ' · ' + currentDevice.type : ''))
+      : 'Abre Spotify en PC/móvil';
     sel.appendChild(o);
     return;
   }
@@ -597,13 +600,19 @@ function renderDeviceSelect(activeId = '') {
   sel.value = activeId || prev || (spDevices.find(d => d.is_active) || spDevices[0] || {}).id || '';
 }
 
-async function spLoadDevices() {
+async function spLoadDevices(force = false) {
   try {
-    const d = await api('/api/spotify/devices');
+    const d = await api('/api/spotify/devices' + (force ? '?force=1' : ''));
     spDevices = d.devices || [];
     renderDeviceSelect((spCurrent.device && spCurrent.device.id) || '');
-    if (!spDevices.length) toast('Abre Spotify en el PC/móvil para que aparezca como dispositivo');
-  } catch (e) { toast(e.message); }
+    if (d.rate_limited && d.cached) {
+      toast('Spotify está limitando dispositivos; usando la última lista conocida');
+    } else if (!spDevices.length) {
+      toast('Abre Spotify en el PC/móvil para que aparezca como dispositivo');
+    }
+  } catch (e) {
+    toast(e.message || 'No se pudieron leer dispositivos');
+  }
 }
 
 async function spTransferDevice(id) {
@@ -1789,7 +1798,7 @@ async function deleteEvent(e) {
   await loadStatus();
   weatherLoad();
   setInterval(() => spLoadCurrent(false), 5000);
-  setInterval(spLoadDevices, 30000);
+  setInterval(() => spLoadDevices(false), 120000);
   setInterval(weatherLoad, 10 * 60 * 1000);
   setInterval(loadStatus, 60 * 1000);
   $('event-modal').onclick = e => { if (e.target.id === 'event-modal') closeEventModal(); };
