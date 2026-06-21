@@ -4,6 +4,7 @@ import json
 import os
 import secrets
 import time
+from threading import Lock
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from urllib.parse import urlencode, quote
@@ -23,6 +24,18 @@ PINNED_PLAYLISTS_FILE = DATA_DIR / "pinned_playlists.json"
 PLAYLIST_ORDER_FILE = DATA_DIR / "playlist_order.json"
 SPOTIFY_ERRORS_LOG_FILE = DATA_DIR / "spotify_errors.log"
 SPOTIFY_PLAYLIST_CACHE_SECONDS = int(os.getenv("SPOTIFY_PLAYLIST_CACHE_SECONDS", "900"))
+# Spotify limita bastante el endpoint /me/player/devices si se llama muchas veces
+# al cargar el dashboard. Cacheamos el resultado y respetamos Retry-After para
+# evitar falsos "no hay dispositivos" cuando realmente es rate limit HTTP 429.
+SPOTIFY_DEVICES_CACHE_SECONDS = int(os.getenv("SPOTIFY_DEVICES_CACHE_SECONDS", "45"))
+SPOTIFY_DEVICES_RATE_LIMIT_FALLBACK_SECONDS = int(os.getenv("SPOTIFY_DEVICES_RATE_LIMIT_FALLBACK_SECONDS", "25"))
+SPOTIFY_DEVICES_CACHE = {
+    "devices": [],
+    "fetched_at": 0.0,
+    "rate_limited_until": 0.0,
+    "last_error": None,
+}
+SPOTIFY_DEVICES_LOCK = Lock()
 
 load_dotenv(BASE_DIR / ".env")
 
@@ -384,13 +397,79 @@ def spotify_error_message(err):
     return str(err) if err else "Error desconocido"
 
 
-def spotify_list_devices():
-    data, status, err = spotify_api("/me/player/devices")
-    if status == 401:
-        return [], status, err
-    if not data or status >= 400:
-        return [], status, err
-    return data.get("devices") or [], status, None
+def spotify_retry_after_seconds(err, fallback=None):
+    fallback = SPOTIFY_DEVICES_RATE_LIMIT_FALLBACK_SECONDS if fallback is None else fallback
+    if isinstance(err, dict):
+        value = err.get("retry_after") or err.get("Retry-After")
+        try:
+            return max(1, int(float(value)))
+        except Exception:
+            pass
+    return fallback
+
+
+def spotify_list_devices(force=False, allow_stale=True):
+    """Lee dispositivos Spotify con caché y backoff anti-429.
+
+    El dashboard consulta estado, dispositivos y listas casi a la vez al arrancar.
+    Si cada vista llama directamente a /me/player/devices, Spotify responde 429
+    y el usuario ve falsamente que no hay dispositivos. Con esta caché, una
+    respuesta válida se reutiliza unos segundos y, si Spotify marca rate limit,
+    se devuelven los últimos dispositivos conocidos mientras dure el Retry-After.
+    """
+    now = time.time()
+    with SPOTIFY_DEVICES_LOCK:
+        cached_devices = SPOTIFY_DEVICES_CACHE.get("devices") or []
+        fetched_at = float(SPOTIFY_DEVICES_CACHE.get("fetched_at") or 0)
+        limited_until = float(SPOTIFY_DEVICES_CACHE.get("rate_limited_until") or 0)
+
+        if not force and cached_devices and now - fetched_at < SPOTIFY_DEVICES_CACHE_SECONDS:
+            return cached_devices, 200, {"cached": True}
+
+        if limited_until > now:
+            retry_after = max(1, int(limited_until - now))
+            detail = {
+                "rate_limited": True,
+                "cached": bool(cached_devices),
+                "retry_after": retry_after,
+                "message": f"Spotify está limitando temporalmente la lectura de dispositivos. Reintenta en {retry_after} s.",
+            }
+            if allow_stale and cached_devices:
+                return cached_devices, 200, detail
+            return [], 429, detail
+
+        data, status, err = spotify_api("/me/player/devices")
+
+        if status == 401:
+            return [], status, err
+
+        if status == 429:
+            retry_after = spotify_retry_after_seconds(err)
+            SPOTIFY_DEVICES_CACHE["rate_limited_until"] = time.time() + retry_after
+            detail = {
+                "rate_limited": True,
+                "cached": bool(cached_devices),
+                "retry_after": retry_after,
+                "spotify_error": err,
+                "message": f"Spotify está limitando temporalmente la lectura de dispositivos. Reintenta en {retry_after} s.",
+            }
+            SPOTIFY_DEVICES_CACHE["last_error"] = detail
+            if allow_stale and cached_devices:
+                return cached_devices, 200, detail
+            return [], 429, detail
+
+        if not data or status >= 400:
+            SPOTIFY_DEVICES_CACHE["last_error"] = err
+            return [], status, err
+
+        devices = data.get("devices") or []
+        SPOTIFY_DEVICES_CACHE.update({
+            "devices": devices,
+            "fetched_at": time.time(),
+            "rate_limited_until": 0.0,
+            "last_error": None,
+        })
+        return devices, status, None
 
 
 def spotify_choose_device(preferred_id=None, transfer_if_needed=True):
@@ -400,8 +479,15 @@ def spotify_choose_device(preferred_id=None, transfer_if_needed=True):
     devices, status, err = spotify_list_devices()
     if status == 401:
         return None, "Spotify no conectado", err
+    # Si la UI ya conoce un device_id válido desde /me/player pero Spotify está
+    # rate-limitando /devices, probamos directamente con ese dispositivo.
+    if preferred_id and (status == 429 or (isinstance(err, dict) and err.get("rate_limited"))):
+        return preferred_id, None, None
     available = [d for d in devices if d.get("id") and not d.get("is_restricted")]
     if not available:
+        if status == 429 or (isinstance(err, dict) and err.get("rate_limited")):
+            retry_after = spotify_retry_after_seconds(err)
+            return None, f"Spotify está limitando temporalmente la lectura de dispositivos. Espera {retry_after} segundos y pulsa actualizar dispositivos.", err
         return None, "No hay ningún dispositivo Spotify disponible. Abre Spotify en el PC o móvil y pulsa actualizar dispositivos.", err
     chosen = None
     if preferred_id:
@@ -469,11 +555,20 @@ def api_status():
 @app.route("/api/spotify/current")
 def api_spotify_current():
     player, status, err = spotify_api("/me/player")
-    devices, _, _ = spotify_list_devices()
-    active_device = next((d for d in devices if d.get("is_active")), None)
-    first_device = active_device or next((d for d in devices if d.get("id") and not d.get("is_restricted")), None)
     if status == 401:
         return json_error("Spotify no conectado", 401)
+
+    player_device = (player.get("device") if isinstance(player, dict) else None) or {}
+    if player_device.get("id"):
+        # /me/player ya devuelve el dispositivo activo; así evitamos llamar a
+        # /me/player/devices en cada refresco de estado y reducimos los 429.
+        devices = [player_device]
+        first_device = player_device
+    else:
+        devices, _, _ = spotify_list_devices()
+        active_device = next((d for d in devices if d.get("is_active")), None)
+        first_device = active_device or next((d for d in devices if d.get("id") and not d.get("is_restricted")), None)
+
     if status == 204 or not player:
         return jsonify({"ok": True, "playing": False, "track": None, "device": first_device or {}, "devices": devices})
     item = player.get("item") if isinstance(player, dict) else None
@@ -484,7 +579,7 @@ def api_spotify_current():
         "progress_ms": player.get("progress_ms") or 0,
         "shuffle": bool(player.get("shuffle_state")),
         "repeat": player.get("repeat_state") or "off",
-        "device": player.get("device") or first_device or {},
+        "device": player_device or first_device or {},
         "devices": devices,
         "track": track,
     })
@@ -492,12 +587,23 @@ def api_spotify_current():
 
 @app.route("/api/spotify/devices")
 def api_spotify_devices():
-    devices, status, err = spotify_list_devices()
+    force = (request.args.get("force") or "").lower() in ("1", "true", "yes")
+    devices, status, err = spotify_list_devices(force=force, allow_stale=True)
     if status == 401:
         return json_error("Spotify no conectado", 401)
+    if status == 429:
+        retry_after = spotify_retry_after_seconds(err)
+        return json_error(
+            f"Spotify está limitando temporalmente la lectura de dispositivos. Espera {retry_after} segundos y vuelve a actualizar.",
+            429,
+            err,
+        )
     if status and status >= 400:
         return json_error("No se pudieron leer dispositivos", status, err)
-    return jsonify({"ok": True, "devices": devices})
+    payload = {"ok": True, "devices": devices}
+    if isinstance(err, dict):
+        payload.update({k: v for k, v in err.items() if k in ("cached", "rate_limited", "retry_after", "message")})
+    return jsonify(payload)
 
 
 @app.route("/api/spotify/transfer", methods=["POST"])
@@ -1194,11 +1300,16 @@ def spotify_current_snapshot(max_wait_seconds=0):
     last_payload = None
     while True:
         player, status, err = spotify_api("/me/player")
-        devices, _, _ = spotify_list_devices()
-        active_device = next((d for d in devices if d.get("is_active")), None)
-        first_device = active_device or next((d for d in devices if d.get("id") and not d.get("is_restricted")), None)
         if status == 401:
             return {"ok": False, "error": "Spotify no conectado"}
+        player_device = (player.get("device") if isinstance(player, dict) else None) or {}
+        if player_device.get("id"):
+            devices = [player_device]
+            first_device = player_device
+        else:
+            devices, _, _ = spotify_list_devices()
+            active_device = next((d for d in devices if d.get("is_active")), None)
+            first_device = active_device or next((d for d in devices if d.get("id") and not d.get("is_restricted")), None)
         if status == 204 or not player:
             last_payload = {"ok": True, "playing": False, "track": None, "device": first_device or {}, "devices": devices}
         else:
@@ -1210,7 +1321,7 @@ def spotify_current_snapshot(max_wait_seconds=0):
                 "progress_ms": player.get("progress_ms") or 0,
                 "shuffle": bool(player.get("shuffle_state")),
                 "repeat": player.get("repeat_state") or "off",
-                "device": player.get("device") or first_device or {},
+                "device": player_device or first_device or {},
                 "devices": devices,
                 "track": track,
             }
