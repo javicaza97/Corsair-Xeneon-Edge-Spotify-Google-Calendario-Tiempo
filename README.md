@@ -1,5 +1,8 @@
 # XENEON Dashboard Local
 
+<img width="1679" height="683" alt="Captura de pantalla 2026-06-21 215631" src="https://github.com/user-attachments/assets/762edfbd-8e71-448d-a2be-fc7c362925c2" />
+
+
 Dashboard local para usar en una pantalla Corsair XENEON/iCUE mediante iframe. La aplicación se ejecuta en el PC, escucha por defecto en `127.0.0.1:5050` y muestra una interfaz compacta con tres módulos principales:
 
 - **Spotify**: reproducción actual, controles, dispositivos, playlists, búsqueda, enlaces de playlists especiales y gestión básica de canciones.
