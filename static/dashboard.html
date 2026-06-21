@@ -20,19 +20,19 @@ body{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;background:var(--bg)}
 
 /* Spotify */
 .sp-device{height:29px;display:flex;align-items:center;gap:8px;background:#1b1c23;border:1px solid var(--line);border-radius:8px;padding:0 7px;font-size:11px;color:#b9bdc8;white-space:nowrap;overflow:hidden}.sp-device .dot{width:7px;height:7px;border-radius:99px;background:var(--green);flex:0 0 auto}.sp-device-select{flex:1;min-width:0;background:transparent;border:0;color:#d7dbe6;font-size:11px;font-weight:700;outline:none}.sp-device-select option{background:#161820;color:#e5e7eb}.sp-device .icon-btn{padding:3px 5px;font-size:11px}.sp-login{padding:18px;display:flex;flex-direction:column;gap:12px}.sp-main{display:flex;gap:12px;min-height:132px}.art{width:132px;height:132px;flex:0 0 132px;border-radius:13px;overflow:hidden;background:radial-gradient(circle at 40% 20%,#363948,#15161c 70%);position:relative}.art img{width:100%;height:100%;object-fit:cover;display:block}.art .bars{position:absolute;right:9px;top:9px;display:flex;gap:3px;align-items:flex-end;height:18px}.bar{width:4px;border-radius:3px;background:var(--green);animation:bounce .7s infinite ease-in-out}.bar:nth-child(1){height:7px}.bar:nth-child(2){height:15px;animation-delay:.12s}.bar:nth-child(3){height:10px;animation-delay:.24s}.bar:nth-child(4){height:17px;animation-delay:.05s}.paused .bar{animation-play-state:paused;opacity:.35}@keyframes bounce{0%,100%{transform:scaleY(.35)}50%{transform:scaleY(1)}}
-.sp-info{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center}.track{font-size:19px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.artist{font-size:13px;color:#b7bbc6;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.album{font-size:11px;color:#666b77;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.progress-row{display:flex;align-items:center;gap:8px;margin-top:10px}.time{font-size:10px;color:#6d7280;width:32px}.time.end{text-align:right}.progress{height:5px;background:#272933;border-radius:99px;flex:1;cursor:pointer;overflow:hidden}.fill{height:100%;background:var(--green);width:0%;border-radius:99px}.controls{display:flex;align-items:center;justify-content:center;gap:10px;padding:9px 0}.ctrl{width:32px;height:32px;border-radius:99px;border:0;background:transparent;color:#a2a7b4;cursor:pointer;display:grid;place-items:center}.ctrl:hover{background:#20222a;color:#fff}.ctrl.play{width:46px;height:46px;background:var(--green);color:#041006}.ctrl.active{color:var(--green)}.volume{display:flex;align-items:center;gap:9px}.range{appearance:none;-webkit-appearance:none;height:4px;border-radius:99px;background:#282a33;outline:0;flex:1}.range::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;background:#f4f4f5;border-radius:99px;cursor:pointer}.playlist-wrap{min-height:0;flex:1;display:flex;flex-direction:column;gap:7px}.sub-title{font-size:10px;color:#5e6370;text-transform:uppercase;letter-spacing:.14em;font-weight:900}.playlists{min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:4px;padding-right:3px}.playlist{display:flex;align-items:center;gap:8px;padding:7px;border-radius:10px;cursor:pointer}.playlist:hover{background:#171920}.pl-img{width:36px;height:36px;object-fit:cover;border-radius:6px;background:#22242d;flex:0 0 36px}.pl-meta{min-width:0;flex:1}.pl-name{font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pl-count{font-size:10px;color:#666b77}.pl-actions{display:flex;gap:3px}.pl-actions .icon-btn{padding:5px}.drawer{position:fixed;z-index:200;left:0;top:0;width:33.333vw;min-width:320px;height:100vh;background:#0b0c10;border-right:1px solid var(--line2);transform:translateX(-102%);transition:.22s;display:flex;flex-direction:column}.drawer.open{transform:translateX(0)}.drawer-head{display:flex;align-items:center;gap:10px;padding:13px;border-bottom:1px solid var(--line)}.drawer-head img{width:44px;height:44px;border-radius:7px;object-fit:cover;background:#222}.drawer-title{font-size:13px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tracks{overflow:auto;min-height:0;flex:1;padding:6px 0}.track-item{display:flex;align-items:center;gap:10px;padding:8px 13px;cursor:pointer}.track-item:hover{background:#171920}.track-num{width:23px;text-align:right;color:#6b7280;font-size:11px}.track-item img{width:36px;height:36px;border-radius:6px;object-fit:cover;background:#222}.track-mini{min-width:0;flex:1}.track-mini .n{font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.track-mini .a{font-size:10px;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dur{font-size:10px;color:#7a7f8c}
-.embed-fallback{display:flex;flex-direction:column;gap:10px;padding:10px}.embed-note{font-size:11px;color:#a5a9b5;line-height:1.45;background:#15161c;border:1px solid var(--line);border-radius:10px;padding:10px}.embed-sync{font-size:10px;color:#687081;line-height:1.35;background:rgba(29,185,84,.06);border:1px solid rgba(29,185,84,.18);border-radius:10px;padding:8px}.embed-actions{display:flex;gap:8px}.mini-btn{flex:1;border:1px solid var(--line2);background:#1a1b22;color:#c4c8d3;border-radius:10px;padding:8px 9px;font-size:11px;font-weight:800;cursor:pointer}.mini-btn:hover{filter:brightness(1.12)}.mini-btn.green{background:var(--green);border-color:transparent;color:#06130a}.sp-embed-frame{width:100%;height:calc(100vh - 150px);min-height:430px;border:0;border-radius:10px;background:#15161c;overflow:hidden}.sp-embed-frame iframe{width:100%!important;height:100%!important;border:0;border-radius:10px}
+.sp-info{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center}.track{font-size:19px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.artist{font-size:13px;color:#b7bbc6;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.album{font-size:11px;color:#666b77;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.progress-row{display:flex;align-items:center;gap:8px;margin-top:10px}.time{font-size:10px;color:#6d7280;width:32px}.time.end{text-align:right}.progress{height:5px;background:#272933;border-radius:99px;flex:1;cursor:pointer;overflow:hidden}.fill{height:100%;background:var(--green);width:0%;border-radius:99px}.controls{display:flex;align-items:center;justify-content:center;gap:10px;padding:9px 0}.ctrl{width:32px;height:32px;border-radius:99px;border:0;background:transparent;color:#a2a7b4;cursor:pointer;display:grid;place-items:center}.ctrl:hover{background:#20222a;color:#fff}.ctrl.play{width:46px;height:46px;background:var(--green);color:#041006}.ctrl.active{color:var(--green)}.volume{display:flex;align-items:center;gap:9px}.range{appearance:none;-webkit-appearance:none;height:4px;border-radius:99px;background:#282a33;outline:0;flex:1}.range::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;background:#f4f4f5;border-radius:99px;cursor:pointer}.playlist-wrap{min-height:0;flex:1;display:flex;flex-direction:column;gap:7px}.sub-title{font-size:10px;color:#5e6370;text-transform:uppercase;letter-spacing:.14em;font-weight:900}.playlists{min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:4px;padding-right:3px}.playlist{display:flex;align-items:center;gap:8px;padding:7px;border-radius:10px;cursor:pointer}.playlist:hover{background:#171920}.playlist.temp-playlist{border:1px solid rgba(34,197,94,.24);background:rgba(34,197,94,.045)}.playlist.temp-playlist:hover{background:rgba(34,197,94,.08)}.pl-img{width:36px;height:36px;object-fit:cover;border-radius:6px;background:#22242d;flex:0 0 36px}.pl-meta{min-width:0;flex:1}.pl-name{font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pl-count{font-size:10px;color:#666b77}.pl-actions{display:flex;gap:3px}.pl-actions .icon-btn{padding:5px}.drawer{position:fixed;z-index:200;left:0;top:0;width:33.333vw;min-width:320px;height:100vh;background:#0b0c10;border-right:1px solid var(--line2);transform:translateX(-102%);transition:.22s;display:flex;flex-direction:column}.drawer.open{transform:translateX(0)}.drawer-head{display:flex;align-items:center;gap:10px;padding:13px;border-bottom:1px solid var(--line)}.drawer-head img{width:44px;height:44px;border-radius:7px;object-fit:cover;background:#222}.drawer-title{font-size:13px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tracks{overflow:auto;min-height:0;flex:1;padding:6px 0}.track-item{display:flex;align-items:center;gap:10px;padding:8px 13px;cursor:pointer}.track-item:hover{background:#171920}.track-num{width:23px;text-align:right;color:#6b7280;font-size:11px}.track-item img{width:36px;height:36px;border-radius:6px;object-fit:cover;background:#222}.track-mini{min-width:0;flex:1}.track-mini .n{font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.track-mini .a{font-size:10px;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dur{font-size:10px;color:#7a7f8c}.track-remove{width:28px;height:28px;border-radius:8px;border:1px solid transparent;background:transparent;color:#656b78;cursor:pointer;display:grid;place-items:center;font-size:13px;flex:0 0 28px}.track-remove:hover{color:#f87171;background:rgba(239,68,68,.10);border-color:rgba(239,68,68,.22)}.track-remove:disabled{opacity:.45;cursor:not-allowed}
+.embed-fallback{display:flex;flex-direction:column;gap:10px;padding:10px}.embed-note{font-size:11px;color:#a5a9b5;line-height:1.45;background:#15161c;border:1px solid var(--line);border-radius:10px;padding:10px}.embed-sync{font-size:10px;color:#687081;line-height:1.35;background:rgba(29,185,84,.06);border:1px solid rgba(29,185,84,.18);border-radius:10px;padding:8px}.embed-actions{display:flex;gap:8px}.mini-btn{flex:1;border:1px solid var(--line2);background:#1a1b22;color:#c4c8d3;border-radius:10px;padding:8px 9px;font-size:11px;font-weight:800;cursor:pointer}.mini-btn:hover{filter:brightness(1.12)}.mini-btn.green{background:var(--green);border-color:transparent;color:#06130a}.sp-embed-frame{width:100%;height:calc(100vh - 112px);min-height:470px;border:0;border-radius:10px;background:#15161c;overflow:hidden}.sp-embed-frame iframe{width:100%!important;height:100%!important;border:0;border-radius:10px}.sp-embed-frame.info-only{position:relative;height:calc(100vh - 185px);min-height:520px}.sp-embed-click-blocker{position:absolute;left:0;top:178px;bottom:0;width:64px;z-index:5;background:transparent;cursor:not-allowed}.sp-embed-header-blocker{position:absolute;right:0;top:0;width:110px;height:178px;z-index:5;background:transparent;cursor:not-allowed}.sp-embed-lock-note{font-size:10px;color:#8a91a3;line-height:1.35;background:rgba(255,255,255,.035);border:1px dashed rgba(255,255,255,.12);border-radius:10px;padding:8px}
 
 
 /* Weather */
 .weather-top{display:flex;gap:8px}.weather-top .input{flex:1;height:31px}.weather-hero{min-height:125px;padding:14px;display:flex;align-items:center;justify-content:center;gap:18px}.w-icon{width:78px;height:78px;display:grid;place-items:center}.w-temp{font-size:44px;font-weight:300;line-height:1}.w-desc{font-size:13px;color:#b7bbc6;margin-top:2px}.w-city{font-size:11px;color:#666b77;margin-top:2px}.details{display:grid;grid-template-columns:1fr 1fr;gap:7px}.detail{padding:11px;border-radius:11px;background:#15161c;border:1px solid var(--line)}.detail .l{font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#626773;font-weight:900}.detail .v{font-size:18px;font-weight:900;margin-top:4px}.forecast{display:flex;flex-direction:column;gap:5px;min-height:0;overflow:auto;padding-right:3px}.day{display:grid;grid-template-columns:42px 38px 1fr 48px;align-items:center;gap:8px;border:1px solid var(--line);background:#15161c;border-radius:10px;padding:8px 10px}.dayname{font-size:12px;font-weight:800;color:#a5a9b5}.mini-icon{width:25px;height:25px}.tempbar{height:5px;border-radius:99px;background:#252730;position:relative;overflow:hidden}.tempbar span{position:absolute;height:100%;border-radius:99px;background:linear-gradient(90deg,#60a5fa,#f59e0b)}.temps{font-size:11px;text-align:right;color:#bfc3cf;font-weight:800}.temps .min{color:#6f7480;margin-right:4px}
 
 /* Calendar */
-.cal-card{padding:16px;display:flex;flex-direction:column;gap:12px}.cal-head{display:flex;align-items:center;justify-content:space-between}.month{font-size:18px;font-weight:950;letter-spacing:-.02em}.cal-nav{display:flex;align-items:center;gap:7px}.cal-nav .btn{padding:8px 12px;font-size:12px}.cal-nav .icon-btn{font-size:16px;padding:8px 9px}.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}.dow{text-align:center;font-size:11px;color:#7b8190;text-transform:uppercase;font-weight:950;padding:2px 0 4px}.daycell{height:clamp(42px,6vh,54px);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#c6cbd6;position:relative;cursor:pointer}.daycell:hover{background:#1b1d25}.daycell.other{color:#3e424d}.daycell.today{background:var(--blue);color:#fff;font-weight:950;box-shadow:0 0 0 1px rgba(255,255,255,.12) inset}.daycell.has::after{content:"";position:absolute;bottom:7px;left:50%;transform:translateX(-50%);width:6px;height:6px;background:var(--green2);border-radius:99px;box-shadow:0 0 10px rgba(34,197,94,.35)}.daycell.selected{outline:2px solid rgba(79,142,247,.85);outline-offset:-2px;background:rgba(79,142,247,.15)}.event-list{min-height:0;overflow:auto;display:flex;flex-direction:column;gap:8px;padding-right:4px}.event{display:grid;grid-template-columns:104px 1fr 34px;gap:12px;align-items:center;background:#15161c;border:1px solid var(--line);border-left:5px solid var(--blue);border-radius:12px;padding:12px 11px;min-height:58px}.event:nth-child(4n+2){border-left-color:var(--green2)}.event:nth-child(4n+3){border-left-color:var(--purple)}.event:nth-child(4n+4){border-left-color:var(--amber)}.ev-date{font-size:12px;line-height:1.25;color:#858b9b}.ev-title{font-size:15px;font-weight:950;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ev-loc{font-size:12px;color:#7b8190;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}.trash{color:#555b66;font-size:15px}.trash:hover{color:#fca5a5;background:rgba(239,68,68,.1)}
+.cal-card{padding:16px;display:flex;flex-direction:column;gap:12px}.cal-head{display:flex;align-items:center;justify-content:space-between}.month{font-size:18px;font-weight:950;letter-spacing:-.02em}.cal-nav{display:flex;align-items:center;gap:7px}.cal-nav .btn{padding:8px 12px;font-size:12px}.cal-nav .icon-btn{font-size:16px;padding:8px 9px}.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}.dow{text-align:center;font-size:11px;color:#7b8190;text-transform:uppercase;font-weight:950;padding:2px 0 4px}.daycell{height:clamp(42px,6vh,54px);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#c6cbd6;position:relative;cursor:pointer}.daycell:hover{background:#1b1d25}.daycell.other{color:#3e424d}.daycell.today{background:var(--blue);color:#fff;font-weight:950;box-shadow:0 0 0 1px rgba(255,255,255,.12) inset}.daycell.has::after{content:"";position:absolute;bottom:7px;left:50%;transform:translateX(-50%);width:6px;height:6px;background:var(--green2);border-radius:99px;box-shadow:0 0 10px rgba(34,197,94,.35)}.daycell.selected{outline:2px solid rgba(79,142,247,.85);outline-offset:-2px;background:rgba(79,142,247,.15)}.event-list{min-height:0;overflow:auto;display:flex;flex-direction:column;gap:8px;padding-right:4px}.event{cursor:pointer;display:grid;grid-template-columns:104px 1fr 34px;gap:12px;align-items:center;background:#15161c;border:1px solid var(--line);border-left:5px solid var(--blue);border-radius:12px;padding:12px 11px;min-height:58px}.event:nth-child(4n+2){border-left-color:var(--green2)}.event:nth-child(4n+3){border-left-color:var(--purple)}.event:nth-child(4n+4){border-left-color:var(--amber)}.ev-date{font-size:12px;line-height:1.25;color:#858b9b}.ev-title{font-size:15px;font-weight:950;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ev-loc{font-size:12px;color:#7b8190;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}.trash{color:#555b66;font-size:15px}.trash:hover{color:#fca5a5;background:rgba(239,68,68,.1)}
 
 /* Modal */
 .modal-back{position:fixed;inset:0;background:rgba(0,0,0,.68);z-index:300;display:none;align-items:center;justify-content:center}.modal-back.open{display:flex}.modal{width:380px;background:#15161c;border:1px solid var(--line2);border-radius:18px;padding:18px;box-shadow:0 25px 70px rgba(0,0,0,.5)}.modal h3{margin:0 0 13px;font-size:16px}.form{display:flex;flex-direction:column;gap:9px}.form label{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#757a86;font-weight:900}.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.check{display:flex;align-items:center;gap:8px;color:#c8ccd6;font-size:12px}.modal-actions{display:flex;gap:9px;margin-top:13px}.modal-actions .btn{flex:1}
-.day-modal{width:430px;max-width:calc(100vw - 28px);max-height:86vh;display:flex;flex-direction:column;gap:12px}.day-modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.day-modal-title{min-width:0}.day-modal-title h3{margin:0;font-size:17px;line-height:1.15}.day-modal-date{margin-top:3px;font-size:12px;color:#858b9b;font-weight:750}.day-events{min-height:80px;max-height:52vh;overflow:auto;display:flex;flex-direction:column;gap:8px;padding-right:4px}.day-event{display:grid;grid-template-columns:82px 1fr 30px;gap:10px;align-items:center;background:#1a1b22;border:1px solid var(--line);border-left:4px solid var(--blue);border-radius:12px;padding:11px}.day-event:nth-child(4n+2){border-left-color:var(--green2)}.day-event:nth-child(4n+3){border-left-color:var(--purple)}.day-event:nth-child(4n+4){border-left-color:var(--amber)}.day-event-time{font-size:12px;line-height:1.25;color:#858b9b;font-weight:800}.day-event-title{font-size:14px;font-weight:950;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.day-event-sub{font-size:11px;color:#7b8190;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}.day-events-empty{padding:18px;border:1px dashed var(--line2);border-radius:12px;color:#858b9b;text-align:center;font-size:13px}.toast{position:fixed;right:20px;bottom:20px;z-index:400;background:#15161c;border:1px solid var(--line2);border-radius:10px;padding:10px 14px;font-size:12px;transform:translateY(60px);opacity:0;transition:.25s}.toast.show{transform:translateY(0);opacity:1}
+.day-modal{width:430px;max-width:calc(100vw - 28px);max-height:86vh;display:flex;flex-direction:column;gap:12px}.day-modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.day-modal-title{min-width:0}.day-modal-title h3{margin:0;font-size:17px;line-height:1.15}.day-modal-date{margin-top:3px;font-size:12px;color:#858b9b;font-weight:750}.day-events{min-height:80px;max-height:52vh;overflow:auto;display:flex;flex-direction:column;gap:8px;padding-right:4px}.day-event{cursor:pointer;display:grid;grid-template-columns:82px 1fr 30px;gap:10px;align-items:center;background:#1a1b22;border:1px solid var(--line);border-left:4px solid var(--blue);border-radius:12px;padding:11px}.day-event:nth-child(4n+2){border-left-color:var(--green2)}.day-event:nth-child(4n+3){border-left-color:var(--purple)}.day-event:nth-child(4n+4){border-left-color:var(--amber)}.day-event-time{font-size:12px;line-height:1.25;color:#858b9b;font-weight:800}.day-event-title{font-size:14px;font-weight:950;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.day-event-sub{font-size:11px;color:#7b8190;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}.day-events-empty{padding:18px;border:1px dashed var(--line2);border-radius:12px;color:#858b9b;text-align:center;font-size:13px}.search-modal{width:520px;max-width:calc(100vw - 28px);max-height:86vh;display:flex;flex-direction:column;gap:12px}.search-top{display:flex;gap:8px}.search-top .input{flex:1}.search-results{min-height:120px;max-height:56vh;overflow:auto;display:flex;flex-direction:column;gap:7px;padding-right:4px}.search-result{display:grid !important;grid-template-columns:44px minmax(0,1fr) auto;gap:10px;align-items:center;background:#1a1b22;border:1px solid var(--line);border-radius:12px;padding:8px;cursor:pointer;min-height:62px;white-space:normal !important;overflow:visible !important}.search-result:hover{background:#20222b}.search-result img{width:44px;height:44px;border-radius:8px;object-fit:cover;background:#242631;display:block;flex:0 0 44px}.search-result-name{font-size:13px;font-weight:950;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.search-result-sub{font-size:11px;color:#838898;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}.search-type{font-size:9px;text-transform:uppercase;font-weight:950;letter-spacing:.08em;border-radius:999px;padding:3px 7px;background:#242631;color:#9aa0ad}.search-result.result-track .search-type{color:#86efac;background:rgba(34,197,94,.12)}.search-result.result-artist .search-type{color:#bfdbfe;background:rgba(96,165,250,.12)}.search-result.result-playlist .search-type{color:#fcd34d;background:rgba(245,158,11,.12)}.search-empty{padding:18px;border:1px dashed var(--line2);border-radius:12px;color:#858b9b;text-align:center;font-size:13px}.sub-title-row{display:flex;align-items:center;justify-content:space-between;gap:8px}.sub-title-row .sub-title{min-width:0}.search-btn{font-size:10px;padding:5px 9px}.toast{position:fixed;right:20px;bottom:20px;z-index:400;background:#15161c;border:1px solid var(--line2);border-radius:10px;padding:10px 14px;font-size:12px;transform:translateY(60px);opacity:0;transition:.25s}.toast.show{transform:translateY(0);opacity:1}
 @media(max-height:520px){.panel{padding:9px 11px;gap:8px}.sp-main{min-height:115px}.art{width:112px;height:112px;flex-basis:112px}.track{font-size:16px}.weather-hero{min-height:105px}.w-icon{width:62px;height:62px}.w-temp{font-size:36px}.daycell{height:36px;font-size:12px}.event{padding:9px;min-height:48px}.ev-title{font-size:13px}.ev-date,.ev-loc{font-size:10px}.details .detail{padding:9px}.forecast .day{padding:7px 9px}.controls{padding:5px 0}.ctrl.play{width:40px;height:40px}}
 
 
@@ -61,10 +61,25 @@ body{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;background:var(--bg)}
 .controls{gap:11px !important;padding:10px 0 !important;}
 .ctrl{width:35px !important;height:35px !important;font-size:14px !important;}
 .ctrl.play{width:50px !important;height:50px !important;font-size:17px !important;}
+.ctrl:disabled{opacity:.4 !important;cursor:not-allowed !important;}
+#sp-like-btn.active{color:#22c55e !important;}
 .range{height:4.5px !important;}
 .range::-webkit-slider-thumb{width:14px !important;height:14px !important;}
 .playlists{gap:5px !important;}
 .playlist{padding:8px 7px !important;border-radius:11px !important;}
+.playlist.pinned-playlist{border:1px solid rgba(96,165,250,.26);background:rgba(96,165,250,.05);}
+.playlist.pinned-playlist:hover{background:rgba(96,165,250,.10);}
+.pl-remove:hover{color:#f87171 !important;background:rgba(239,68,68,.12) !important;}
+.pl-unfollow:hover{color:#f87171 !important;background:rgba(239,68,68,.12) !important;}
+.search-add-btn{border:1px solid rgba(34,197,94,.4);background:rgba(34,197,94,.12);color:#86efac;font-size:10px;font-weight:900;border-radius:999px;padding:6px 10px;cursor:pointer;white-space:nowrap;}
+.search-add-btn:hover{background:rgba(34,197,94,.22);}
+.pl-drag{cursor:grab;color:#565b66;font-size:15px;padding:7px 6px;display:inline-flex;align-items:center;justify-content:center;touch-action:none;user-select:none;line-height:1;border-radius:8px;flex:0 0 28px;}
+.pl-drag:hover{color:#d6d9e0;background:rgba(96,165,250,.10);}
+.pl-drag:active{cursor:grabbing;}
+.playlist.dragging{opacity:.72;background:#20222b !important;outline:1px dashed rgba(96,165,250,.65);outline-offset:-2px;}
+#sp-playlists.drag-active{outline:1px dashed rgba(96,165,250,.28);outline-offset:3px;border-radius:10px;}
+body.playlist-dragging{cursor:grabbing;user-select:none;}
+body.playlist-dragging *{user-select:none !important;}
 .pl-img{width:39px !important;height:39px !important;flex-basis:39px !important;border-radius:7px !important;}
 .pl-name{font-size:13px !important;}
 .pl-count{font-size:11px !important;}
@@ -305,6 +320,17 @@ body{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;background:var(--bg)}
   #spotify-panel .ctrl.play{width:42px !important;height:42px !important;}
 }
 
+
+
+/* Acciones Spotify: Me gusta y añadir a playlist */
+.sp-action-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:-2px;margin-bottom:0}
+.sp-action-btn{height:30px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:#1a1b22;color:#c9ced8;font-size:11px;font-weight:900;letter-spacing:.01em;padding:0 12px;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:6px}
+.sp-action-btn:hover{background:#22242d;color:#fff;border-color:rgba(255,255,255,.18)}
+.sp-action-btn.active{background:rgba(29,185,84,.16);border-color:rgba(29,185,84,.34);color:#22c55e}
+.sp-action-btn:disabled{opacity:.42;cursor:not-allowed}
+.add-modal{width:470px;max-width:calc(100vw - 28px);max-height:86vh;display:flex;flex-direction:column;gap:12px}.add-current-track{display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:center;background:#15161c;border:1px solid var(--line);border-radius:12px;padding:9px}.add-current-track img{width:44px;height:44px;border-radius:8px;object-fit:cover;background:#242631}.add-current-name{font-size:13px;font-weight:950;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.add-current-sub{font-size:11px;color:#838898;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}.add-playlist-list{min-height:100px;max-height:55vh;overflow:auto;display:flex;flex-direction:column;gap:7px;padding-right:4px}.add-playlist-item{display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:10px;align-items:center;background:#1a1b22;border:1px solid var(--line);border-radius:12px;padding:8px;cursor:pointer;min-height:58px}.add-playlist-item:hover{background:#20222b}.add-playlist-item img{width:42px;height:42px;border-radius:8px;object-fit:cover;background:#242631}.add-playlist-name{font-size:13px;font-weight:950;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.add-playlist-sub{font-size:11px;color:#838898;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}.add-playlist-tag{font-size:9px;text-transform:uppercase;font-weight:950;letter-spacing:.08em;border-radius:999px;padding:3px 7px;color:#86efac;background:rgba(34,197,94,.12)}
+@media(max-height:560px){.sp-action-row{gap:6px}.sp-action-btn{height:27px;font-size:10px;padding:0 10px}.add-modal{max-height:90vh}.add-playlist-list{max-height:58vh}}
+
 </style>
 </head>
 <body>
@@ -324,11 +350,11 @@ body{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;background:var(--bg)}
       </div>
     </div>
     <div class="controls">
-      <button class="ctrl" id="sp-shuffle" onclick="spToggleShuffle()">⤨</button><button class="ctrl" onclick="spPrev()">◀◀</button><button class="ctrl play" id="sp-play" onclick="spPlayPause()">▶</button><button class="ctrl" onclick="spNext()">▶▶</button><button class="ctrl" id="sp-repeat" onclick="spToggleRepeat()">↻</button>
+      <button class="ctrl" id="sp-shuffle" onclick="spToggleShuffle()">⤨</button><button class="ctrl" onclick="spPrev()">◀◀</button><button class="ctrl play" id="sp-play" onclick="spPlayPause()">▶</button><button class="ctrl" onclick="spNext()">▶▶</button><button class="ctrl" id="sp-repeat" onclick="spToggleRepeat()">↻</button><button class="ctrl" id="sp-like-btn" onclick="spToggleLike()" title="Me gusta" disabled>♡</button>
     </div>
     <div class="volume"><span style="color:#606672;font-size:12px">▾</span><input class="range" id="sp-volume" type="range" min="0" max="100" value="80" oninput="spVolumeDebounced(this.value)" onchange="spVolume(this.value)"><span style="color:#606672;font-size:12px">▴</span></div>
     <div class="divider"></div>
-    <div class="playlist-wrap"><div class="sub-title">Mis playlists</div><div class="playlists" id="sp-playlists"></div></div>
+    <div class="playlist-wrap"><div class="sub-title-row"><div class="sub-title">Mis playlists</div><div style="display:flex;gap:6px"><button class="btn search-btn" onclick="pasteSpotifyLink()" title="Pegar enlace de una playlist de Spotify (Radar de novedades, Discover Weekly...)">🔗 Enlace</button><button class="btn green search-btn" onclick="openSpotifySearch()">Buscar</button></div></div><div class="playlists" id="sp-playlists"></div></div>
   </div>
 </section>
 
@@ -351,7 +377,40 @@ body{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;background:var(--bg)}
 
 <div class="drawer" id="tracks-drawer"><div class="drawer-head"><img id="drawer-img"><div style="min-width:0;flex:1"><div class="drawer-title" id="drawer-title">Playlist</div><div class="pl-count" id="drawer-count"></div></div><button class="icon-btn" onclick="closeTracks()">✕</button></div><div class="tracks" id="tracks-list"></div></div>
 
-<div class="modal-back" id="event-modal"><div class="modal"><h3>Nuevo evento</h3><div class="form"><label>Título</label><input class="input" id="ev-title" placeholder="Ej: Cena"><div class="row"><div><label>Fecha</label><input class="input" id="ev-date" type="date"></div><div><label>Todo el día</label><label class="check"><input type="checkbox" id="ev-allday" onchange="toggleAllDay()"> Sí</label></div></div><div class="row" id="time-row"><div><label>Inicio</label><input class="input" id="ev-start" type="time" value="18:00"></div><div><label>Fin</label><input class="input" id="ev-end" type="time" value="19:00"></div></div><label>Ubicación</label><input class="input" id="ev-location" placeholder="Opcional"><label>Notas</label><input class="input" id="ev-desc" placeholder="Opcional"></div><div class="modal-actions"><button class="btn" onclick="closeEventModal()">Cancelar</button><button class="btn blue" onclick="createEvent()">Guardar</button></div></div></div>
+<div class="modal-back" id="spotify-search-modal">
+  <div class="modal search-modal">
+    <h3>Buscar en Spotify</h3>
+    <div class="search-top">
+      <input class="input" id="sp-search-input" placeholder="Canción, artista o playlist..." onkeydown="if(event.key==='Enter') spotifySearch()">
+      <button class="btn green" onclick="spotifySearch()">Buscar</button>
+    </div>
+    <div class="search-results" id="sp-search-results">
+      <div class="search-empty">Busca una canción, artista o lista. Las listas se añaden temporalmente a Mis playlists para elegir canciones.</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeSpotifySearch()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal-back" id="playlist-add-modal">
+  <div class="modal add-modal">
+    <h3>Añadir canción a playlist</h3>
+    <div class="add-current-track">
+      <img id="add-current-img" alt="">
+      <div style="min-width:0"><div class="add-current-name" id="add-current-name">—</div><div class="add-current-sub" id="add-current-sub">—</div></div>
+    </div>
+    <div class="add-playlist-list" id="add-playlist-list">
+      <div class="search-empty">Cargando tus playlists...</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeAddToPlaylistModal()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-back" id="event-modal"><div class="modal"><h3 id="event-modal-title">Nuevo evento</h3><div class="form"><label>Título</label><input class="input" id="ev-title" placeholder="Ej: Cena"><div class="row"><div><label>Fecha</label><input class="input" id="ev-date" type="date"></div><div><label>Todo el día</label><label class="check"><input type="checkbox" id="ev-allday" onchange="toggleAllDay()"> Sí</label></div></div><div class="row" id="time-row"><div><label>Inicio</label><input class="input" id="ev-start" type="time" value="18:00"></div><div><label>Fin</label><input class="input" id="ev-end" type="time" value="19:00"></div></div><label>Ubicación</label><input class="input" id="ev-location" placeholder="Opcional"><label>Notas</label><input class="input" id="ev-desc" placeholder="Opcional"></div><div class="modal-actions"><button class="btn" onclick="closeEventModal()">Cancelar</button><button class="btn blue" id="ev-save-btn" onclick="saveEvent()">Guardar</button></div></div></div>
 
 <div class="modal-back" id="day-modal">
   <div class="modal day-modal">
@@ -379,21 +438,35 @@ let statusData = {};
 let spCurrent = { ok: true, playing: false, track: null, progress_ms: 0, shuffle: false, repeat: 'off', device: {}, devices: [] };
 let spProgressTimer = null;
 let spPlaylists = [];
+let spPlaylistOrder = [];
+let plDragState = null;
+let plSuppressClickUntil = 0;
 let spDevices = [];
 let spLastCommandAt = 0;
 let spPlaylistLoadDone = false;
 let spVolTimer = null;
+let spVolLastChangeAt = 0;
 let spEmbedApiReady = null;
 let spEmbedControllers = {};
 let spEmbedActive = false;
 let spEmbedCurrentController = null;
 let spEmbedTakingOver = false;
 let spLastEmbedUri = '';
+let spSearchTimer = null;
+let weatherCityLoadedFromBackend = false;
+let spLikeCheckTrackId = "";
+let spCurrentLiked = false;
+let spLikeBusy = false;
+let spAddablePlaylists = [];
+let spLikedTracksCache = [];
+const LIKED_PLAYLIST = { id: '__liked__', uri: 'spotify:collection:tracks', name: 'Canciones que me gustan', image: '', liked_special: true, can_modify: false, tracks_total: null };
+const LIKED_COVER = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4500a5"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient></defs><rect width="64" height="64" rx="8" fill="url(#g)"/><path d="M32 47C20 40 13 34 13 26.5 13 22 16.5 19 21 19c3 0 5.6 1.7 7 4.2C29.4 20.7 32 19 35 19c4.5 0 8 3 8 7.5C43 34 36 40 32 47z" fill="#fff"/></svg>');
 
 let calDate = new Date();
 let selectedDate = new Date();
 let calEvents = [];
 let calDayModalDate = null;
+let editingEvent = null;
 let calCompact = localStorage.getItem('calendar_compact') === '1';
 
 window.onSpotifyIframeApiReady = (IFrameAPI) => { spEmbedApiReady = IFrameAPI; };
@@ -483,7 +556,7 @@ async function loadStatus() {
     $('cal-login').style.display = statusData.google_connected ? 'none' : 'flex';
     $('cal-app').style.display = statusData.google_connected ? 'flex' : 'none';
     applyCalendarCompact();
-    if (statusData.default_city && !localStorage.getItem('weather_city')) $('w-city-input').value = statusData.default_city;
+    if (statusData.weather_city && !weatherCityLoadedFromBackend) { $('w-city-input').value = statusData.weather_city; weatherCityLoadedFromBackend = true; }
     if (statusData.spotify_connected) {
       spLoadDevices();
       spLoadCurrent(true);
@@ -499,7 +572,7 @@ async function loadStatus() {
 // Spotify
 // ─────────────────────────────────────────────────────────────
 function selectedDeviceId() { return $('sp-device-select') ? $('sp-device-select').value : ''; }
-function spVolumeDebounced(v) { clearTimeout(spVolTimer); spVolTimer = setTimeout(() => spVolume(v), 100); }
+function spVolumeDebounced(v) { spVolLastChangeAt = Date.now(); clearTimeout(spVolTimer); spVolTimer = setTimeout(() => spVolume(v), 100); }
 function trackDuration() { return (spCurrent.track && spCurrent.track.duration_ms) || 0; }
 
 function renderDeviceSelect(activeId = '') {
@@ -545,6 +618,10 @@ function applySpotifyCurrent(d, force = false) {
   if (!d || d.ok === false) return;
   // No machacar un cambio visual inmediato mientras Spotify Connect actualiza.
   if (!force && !d.track && Date.now() - spLastCommandAt < 2600 && spCurrent.track) return;
+  // Si el usuario acaba de tocar el volumen, conservamos su valor aunque la
+  // consulta a Spotify aún devuelva el volumen antiguo (Connect tarda en reflejarlo).
+  const keepVol = (Date.now() - spVolLastChangeAt < 4000 && spCurrent.device && spCurrent.device.volume_percent != null)
+    ? spCurrent.device.volume_percent : null;
   spCurrent = {
     ...spCurrent,
     ...d,
@@ -555,6 +632,7 @@ function applySpotifyCurrent(d, force = false) {
     shuffle: !!d.shuffle,
     repeat: d.repeat || 'off',
   };
+  if (keepVol != null && spCurrent.device) spCurrent.device.volume_percent = keepVol;
   if (spCurrent.track) spEmbedActive = false;
   renderSpotify();
 }
@@ -585,10 +663,11 @@ function renderSpotify() {
   } else if (spCurrent.device && spCurrent.device.id) {
     renderDeviceSelect(spCurrent.device.id);
   }
-  if (spCurrent.device && spCurrent.device.volume_percent != null) $('sp-volume').value = spCurrent.device.volume_percent;
+  if (spCurrent.device && spCurrent.device.volume_percent != null && Date.now() - spVolLastChangeAt > 4000) $('sp-volume').value = spCurrent.device.volume_percent;
   $('sp-shuffle').classList.toggle('active', !!spCurrent.shuffle);
   $('sp-repeat').classList.toggle('active', spCurrent.repeat && spCurrent.repeat !== 'off');
   updateProgress();
+  updateSpotifyActionButtons();
   clearInterval(spProgressTimer);
   if (playing) {
     spProgressTimer = setInterval(() => {
@@ -621,24 +700,447 @@ function updatePlaylistCount(plId, total) {
   });
 }
 
+function renderSpotifyPlaylistList() {
+  const box = $('sp-playlists');
+  box.innerHTML = '';
+  spPlaylists.forEach(p => {
+    const el = document.createElement('div');
+    el.className = 'playlist' + (p.temporary ? ' temp-playlist' : '') + (p.liked_special ? ' liked-playlist' : '') + (p.pinned ? ' pinned-playlist' : '');
+    el.dataset.plId = p.id;
+    const badge = p.temporary
+      ? '<span style="font-size:9px;color:#22c55e;margin-left:5px;vertical-align:1px;">TEMP</span>'
+      : (p.pinned ? '<span style="font-size:9px;color:#60a5fa;margin-left:5px;vertical-align:1px;">FIJA</span>' : '');
+    const cover = p.liked_special
+      ? `<div class="pl-img" style="background:linear-gradient(135deg,#4500a5,#8b5cf6);display:grid;place-items:center;color:#fff;font-size:17px">♥</div>`
+      : `<img class="pl-img" src="${img(p.image)}">`;
+    const countText = (p.tracks_total == null && p.pinned) ? 'Lista de Spotify' : plCountText(p.tracks_total);
+    // Listas que sigues (ni tuyas, ni fijas, ni Me gusta): se pueden quitar de la biblioteca.
+    const isFollowed = !p.liked_special && !p.pinned && !p.temporary && !p.can_modify && p.id !== '__liked__';
+    let remBtn = '';
+    if (p.pinned) remBtn = `<button class="icon-btn pl-remove" title="Quitar lista fija">✕</button>`;
+    else if (isFollowed) remBtn = `<button class="icon-btn pl-unfollow" title="Quitar de mi biblioteca">✕</button>`;
+    el.innerHTML = `${cover}<div class="pl-meta"><div class="pl-name">${esc(p.name)}${badge}</div><div class="pl-count" data-pl-count="${esc(p.id)}">${countText}</div></div><div class="pl-actions"><button class="icon-btn pl-play" title="Reproducir">▶</button><button class="icon-btn pl-view" title="Ver canciones">☰</button>${remBtn}<span class="pl-drag" title="Mantén pulsado y arrastra para ordenar">⠿</span></div>`;
+    el.querySelector('.pl-play').onclick = (ev) => { ev.stopPropagation(); spPlayPlaylist(p); };
+    el.querySelector('.pl-view').onclick = (ev) => { ev.stopPropagation(); openTracks(p); };
+    const drag = el.querySelector('.pl-drag');
+    if (drag) {
+      drag.onclick = (ev) => ev.stopPropagation();
+      drag.addEventListener('pointerdown', (ev) => startPlaylistDrag(ev, el));
+    }
+    const rem = el.querySelector('.pl-remove');
+    if (rem) rem.onclick = (ev) => { ev.stopPropagation(); removePinnedPlaylist(p); };
+    const unf = el.querySelector('.pl-unfollow');
+    if (unf) unf.onclick = (ev) => { ev.stopPropagation(); unfollowPlaylist(p); };
+    el.onclick = () => {
+      if (Date.now() < plSuppressClickUntil) return;
+      openTracks(p);
+    };
+    box.appendChild(el);
+  });
+}
+
+// ── Reordenar Mis playlists arrastrando desde el icono (ratón y táctil) ──
+function startPlaylistDrag(ev, el) {
+  if (!el || ev.button > 0) return;
+  ev.preventDefault();
+  ev.stopPropagation();
+
+  const box = $('sp-playlists');
+  if (!box) return;
+
+  const startY = ev.clientY;
+  plDragState = {
+    el,
+    box,
+    moved: false,
+    startY,
+    pointerId: ev.pointerId,
+    lastClientY: ev.clientY,
+    autoScrollTimer: null,
+  };
+
+  el.classList.add('dragging');
+  box.classList.add('drag-active');
+  document.body.classList.add('playlist-dragging');
+
+  try { ev.currentTarget.setPointerCapture(ev.pointerId); } catch (e) {}
+
+  document.addEventListener('pointermove', onPlaylistDragMove, { passive: false });
+  document.addEventListener('pointerup', endPlaylistDrag, { passive: false });
+  document.addEventListener('pointercancel', endPlaylistDrag, { passive: false });
+}
+
+function onPlaylistDragMove(ev) {
+  if (!plDragState || ev.pointerId !== plDragState.pointerId) return;
+  ev.preventDefault();
+
+  const st = plDragState;
+  st.lastClientY = ev.clientY;
+  if (Math.abs(ev.clientY - st.startY) > 3) st.moved = true;
+
+  movePlaylistToPointer(ev.clientY);
+  updatePlaylistAutoScroll(ev.clientY);
+}
+
+function movePlaylistToPointer(clientY) {
+  if (!plDragState) return;
+  const box = plDragState.box;
+  const dragEl = plDragState.el;
+  const items = [...box.querySelectorAll('.playlist')].filter(it => it !== dragEl);
+
+  let before = null;
+  for (const it of items) {
+    const r = it.getBoundingClientRect();
+    if (clientY < r.top + r.height / 2) {
+      before = it;
+      break;
+    }
+  }
+
+  if (before) box.insertBefore(dragEl, before);
+  else box.appendChild(dragEl);
+}
+
+function updatePlaylistAutoScroll(clientY) {
+  if (!plDragState) return;
+  const box = plDragState.box;
+  const r = box.getBoundingClientRect();
+  const edge = 58;
+  const maxSpeed = 18;
+  let speed = 0;
+
+  if (clientY < r.top + edge) {
+    speed = -Math.ceil(((r.top + edge - clientY) / edge) * maxSpeed);
+  } else if (clientY > r.bottom - edge) {
+    speed = Math.ceil(((clientY - (r.bottom - edge)) / edge) * maxSpeed);
+  }
+
+  if (!speed) {
+    if (plDragState.autoScrollTimer) {
+      clearInterval(plDragState.autoScrollTimer);
+      plDragState.autoScrollTimer = null;
+    }
+    return;
+  }
+
+  plDragState.autoScrollSpeed = speed;
+  if (plDragState.autoScrollTimer) return;
+
+  plDragState.autoScrollTimer = setInterval(() => {
+    if (!plDragState) return;
+    const box = plDragState.box;
+    const before = box.scrollTop;
+    box.scrollTop += plDragState.autoScrollSpeed || 0;
+    if (box.scrollTop !== before) movePlaylistToPointer(plDragState.lastClientY);
+  }, 16);
+}
+
+function endPlaylistDrag(ev) {
+  if (!plDragState) return;
+  if (ev && ev.pointerId !== plDragState.pointerId) return;
+  if (ev) ev.preventDefault();
+
+  const st = plDragState;
+  const box = st.box;
+
+  document.removeEventListener('pointermove', onPlaylistDragMove);
+  document.removeEventListener('pointerup', endPlaylistDrag);
+  document.removeEventListener('pointercancel', endPlaylistDrag);
+
+  if (st.autoScrollTimer) clearInterval(st.autoScrollTimer);
+  st.el.classList.remove('dragging');
+  box.classList.remove('drag-active');
+  document.body.classList.remove('playlist-dragging');
+
+  if (st.moved) {
+    plSuppressClickUntil = Date.now() + 350;
+    const orderIds = [...box.querySelectorAll('.playlist')].map(el => el.dataset.plId);
+    spPlaylists.sort((a, b) => orderIds.indexOf(a.id) - orderIds.indexOf(b.id));
+    spPlaylistOrder = orderIds;
+    savePlaylistOrder(orderIds);
+  }
+
+  plDragState = null;
+}
+
+async function savePlaylistOrder(orderIds) {
+  try { await api('/api/spotify/playlist-order', { method: 'POST', body: JSON.stringify({ order: orderIds }) }); }
+  catch (e) { toast('Orden cambiado en pantalla, pero no se pudo guardar'); }
+}
+
+function applySavedOrder(list) {
+  if (!spPlaylistOrder || !spPlaylistOrder.length) return list;
+  const pos = new Map(spPlaylistOrder.map((id, i) => [id, i]));
+  return [...list].sort((a, b) => {
+    const ai = pos.has(a.id) ? pos.get(a.id) : Infinity;
+    const bi = pos.has(b.id) ? pos.get(b.id) : Infinity;
+    return ai - bi;
+  });
+}
+
+async function refreshLikedCount() {
+  try {
+    const d = await api('/api/spotify/liked-count');
+    if (d && d.total != null) { LIKED_PLAYLIST.tracks_total = d.total; updatePlaylistCount('__liked__', d.total); }
+  } catch (e) { /* sin contador si falla */ }
+}
+
+async function unfollowPlaylist(p) {
+  if (!p || !p.id) return;
+  if (!confirm(`¿Quitar "${p.name || 'esta lista'}" de tu biblioteca de Spotify?`)) return;
+  try {
+    await api('/api/spotify/follow-playlist', { method: 'DELETE', body: JSON.stringify({ id: p.id, uri: p.uri }) });
+    spPlaylists = spPlaylists.filter(x => x.id !== p.id);
+    renderSpotifyPlaylistList();
+    toast('Quitada de tu biblioteca');
+  } catch (e) { toast('No se pudo quitar: ' + (e.message || '')); }
+}
+
+async function followPlaylistFromSearch(r) {
+  if (!r || !r.id) return;
+  try {
+    await api('/api/spotify/follow-playlist', { method: 'POST', body: JSON.stringify({ id: r.id, uri: r.uri || ('spotify:playlist:' + r.id), action: 'add' }) });
+    // La metemos ya en Mis playlists como lista seguida (no temporal).
+    const exists = spPlaylists.find(x => x && x.id === r.id);
+    if (!exists) {
+      const insertAt = (spPlaylists[0] && spPlaylists[0].liked_special) ? 1 : 0;
+      spPlaylists.splice(insertAt + (spPlaylists.filter(x => x.pinned).length), 0, {
+        id: r.id, uri: r.uri || ('spotify:playlist:' + r.id), name: r.name || 'Playlist',
+        image: r.image || '', tracks_total: r.tracks_total, public: r.public,
+        collaborative: r.collaborative || false, can_modify: false,
+      });
+      renderSpotifyPlaylistList();
+    }
+    toast('Añadida a tu biblioteca: ' + (r.name || ''));
+  } catch (e) { toast('No se pudo añadir a biblioteca: ' + (e.message || '')); }
+}
+
 async function spLoadPlaylists(force = false) {
   if (spPlaylistLoadDone && !force) return;
   try {
+    let pinned = [];
+    try {
+      const pd = await api('/api/spotify/pinned');
+      pinned = (pd.playlists || []).map(p => ({ ...p, pinned: true, can_modify: false }));
+    } catch (e) { /* si falla, seguimos sin fijas */ }
+    try {
+      const od = await api('/api/spotify/playlist-order');
+      spPlaylistOrder = od.order || [];
+    } catch (e) { spPlaylistOrder = []; }
     const d = await api('/api/spotify/playlists');
     spPlaylistLoadDone = true;
-    spPlaylists = d.playlists || [];
-    const box = $('sp-playlists');
-    box.innerHTML = '';
-    spPlaylists.forEach(p => {
-      const el = document.createElement('div');
-      el.className = 'playlist';
-      el.innerHTML = `<img class="pl-img" src="${img(p.image)}"><div class="pl-meta"><div class="pl-name">${esc(p.name)}</div><div class="pl-count" data-pl-count="${esc(p.id)}">${plCountText(p.tracks_total)}</div></div><div class="pl-actions"><button class="icon-btn" title="Reproducir">▶</button><button class="icon-btn" title="Ver canciones">☰</button></div>`;
-      el.querySelector('.pl-actions button:first-child').onclick = (ev) => { ev.stopPropagation(); spPlayPlaylist(p); };
-      el.querySelector('.pl-actions button:last-child').onclick = (ev) => { ev.stopPropagation(); openTracks(p); };
-      el.onclick = () => openTracks(p);
-      box.appendChild(el);
-    });
+    const pinnedIds = new Set(pinned.map(p => p.id));
+    const previousTemporary = spPlaylists.filter(p => p && p.temporary && !pinnedIds.has(p.id));
+    const basePlaylists = (d.playlists || []).filter(p => !pinnedIds.has(p.id) && !previousTemporary.some(t => t.id === p.id));
+    spPlaylists = applySavedOrder([LIKED_PLAYLIST, ...pinned, ...previousTemporary, ...basePlaylists]);
+    renderSpotifyPlaylistList();
+    refreshLikedCount();
   } catch (e) { toast('No se pudieron cargar playlists: ' + e.message); }
+}
+
+function addPinnedPlaylist(pl, openAfter = true) {
+  const p = {
+    id: pl.id,
+    uri: pl.uri || ('spotify:playlist:' + pl.id),
+    name: pl.name || 'Playlist',
+    image: pl.image || '',
+    tracks_total: pl.tracks_total,
+    public: pl.public,
+    collaborative: pl.collaborative || false,
+    can_modify: false,
+    pinned: true,
+  };
+  const idx = spPlaylists.findIndex(x => x && x.id === p.id);
+  if (idx >= 0) {
+    spPlaylists[idx] = { ...spPlaylists[idx], ...p, temporary: false };
+  } else {
+    const insertAt = (spPlaylists[0] && spPlaylists[0].liked_special) ? 1 : 0;
+    spPlaylists.splice(insertAt, 0, p);
+  }
+  renderSpotifyPlaylistList();
+  if (openAfter) openTracks(p);
+  return p;
+}
+
+async function removePinnedPlaylist(p) {
+  if (!p || !p.id) return;
+  if (!confirm(`¿Quitar "${p.name || 'esta lista'}" de tus listas fijas?`)) return;
+  try {
+    await api('/api/spotify/pinned/' + encodeURIComponent(p.id), { method: 'DELETE' });
+    spPlaylists = spPlaylists.filter(x => x.id !== p.id);
+    renderSpotifyPlaylistList();
+    toast('Lista quitada');
+  } catch (e) { toast('No se pudo quitar: ' + (e.message || '')); }
+}
+
+function addTemporaryPlaylistFromSearch(r, openAfterAdd = true) {
+  if (!r || r.type !== 'playlist' || !r.id) return null;
+  const p = {
+    id: r.id,
+    uri: r.uri || ('spotify:playlist:' + r.id),
+    name: r.name || 'Playlist de búsqueda',
+    image: r.image || '',
+    tracks_total: r.tracks_total,
+    public: r.public,
+    collaborative: r.collaborative || false,
+    can_modify: false,
+    temporary: true,
+  };
+  const existingIndex = spPlaylists.findIndex(x => x && x.id === p.id);
+  if (existingIndex >= 0) {
+    spPlaylists[existingIndex] = { ...spPlaylists[existingIndex], ...p };
+    spPlaylists.unshift(spPlaylists.splice(existingIndex, 1)[0]);
+  } else {
+    spPlaylists.unshift(p);
+  }
+  renderSpotifyPlaylistList();
+  if (openAfterAdd) openTracks(p);
+  return p;
+}
+
+async function pasteSpotifyLink() {
+  const url = prompt('Pega el enlace de la playlist de Spotify\n(en Spotify: ⋯  →  Compartir  →  Copiar enlace):');
+  if (!url || !url.trim()) return;
+  const v = url.trim();
+  if (!/playlist/i.test(v) && !/^[a-zA-Z0-9]{16,}$/.test(v)) {
+    toast('Eso no parece un enlace de playlist de Spotify');
+    return;
+  }
+  try {
+    const d = await api('/api/spotify/resolve-playlist?id=' + encodeURIComponent(v));
+    if (!d || !d.playlist || !d.playlist.id) { toast('No se pudo leer esa playlist'); return; }
+    const pl = d.playlist;
+    try { await api('/api/spotify/pinned', { method: 'POST', body: JSON.stringify(pl) }); } catch (e) {}
+    addPinnedPlaylist(pl, true);
+    toast('Lista fijada: ' + (pl.name || ''));
+  } catch (e) {
+    toast('No se pudo añadir: ' + (e.message || ''));
+  }
+}
+
+
+function updateSpotifyActionButtons() {
+  const tr = spCurrent.track;
+  const addBtn = $('sp-addlist-btn');
+  const likeBtn = $('sp-like-btn');
+  const hasTrack = !!(tr && tr.id && tr.uri);
+  if (addBtn) addBtn.disabled = !hasTrack;
+  if (likeBtn) likeBtn.disabled = !hasTrack || spLikeBusy;
+  if (!hasTrack) {
+    spLikeCheckTrackId = '';
+    spCurrentLiked = false;
+    renderLikeButton();
+    return;
+  }
+  // Si cambió la canción, comprobamos si ya está en "Me gusta".
+  if (tr.id && tr.id !== spLikeCheckTrackId) {
+    spLikeCheckTrackId = tr.id;
+    spCurrentLiked = false;
+    renderLikeButton();
+    refreshLikedState(tr.id);
+  } else {
+    renderLikeButton();
+  }
+}
+
+function renderLikeButton() {
+  const likeBtn = $('sp-like-btn');
+  if (!likeBtn) return;
+  likeBtn.classList.toggle('active', !!spCurrentLiked);
+  likeBtn.textContent = spCurrentLiked ? '♥' : '♡';
+  likeBtn.title = spCurrentLiked ? 'Quitar de Me gusta' : 'Me gusta';
+}
+
+async function refreshLikedState(trackId) {
+  try {
+    const d = await api('/api/spotify/liked?track_id=' + encodeURIComponent(trackId));
+    if (spCurrent.track && spCurrent.track.id === trackId) {
+      spCurrentLiked = !!d.liked;
+      renderLikeButton();
+    }
+  } catch (e) {
+    // Si falta el scope user-library-read u otro fallo, dejamos el corazón vacío.
+    renderLikeButton();
+  }
+}
+
+async function spToggleLike() {
+  const tr = spCurrent.track;
+  if (!tr || !tr.id) { toast('No hay canción seleccionada'); return; }
+  const desired = !spCurrentLiked;
+  spLikeBusy = true;
+  spCurrentLiked = desired;          // feedback inmediato
+  renderLikeButton();
+  try {
+    const d = await api('/api/spotify/like', { method: 'POST', body: JSON.stringify({ track_uri: tr.uri, track_id: tr.id, liked: desired }) });
+    spCurrentLiked = !!d.liked;
+    renderLikeButton();
+    toast(spCurrentLiked ? '♥ Añadida a Me gusta' : 'Quitada de Me gusta');
+    // Si tenemos la lista de Me gusta abierta/cacheada, la invalidamos.
+    spLikedTracksCache = [];
+  } catch (e) {
+    spCurrentLiked = !desired;       // revertir
+    renderLikeButton();
+    toast('No se pudo actualizar Me gusta: ' + (e.message || ''));
+  } finally {
+    spLikeBusy = false;
+    const likeBtn = $('sp-like-btn');
+    if (likeBtn) likeBtn.disabled = !(spCurrent.track && spCurrent.track.id);
+  }
+}
+
+
+function openAddToPlaylistModal() {
+  const tr = spCurrent.track;
+  if (!tr || !tr.uri) { toast('No hay canción seleccionada'); return; }
+  $('add-current-img').src = tr.image ? img(tr.image) : '';
+  $('add-current-name').textContent = tr.name || 'Canción';
+  $('add-current-sub').textContent = (tr.artists || '') + (tr.album ? ' · ' + tr.album : '');
+  $('playlist-add-modal').classList.add('open');
+  loadAddablePlaylists();
+}
+function closeAddToPlaylistModal() { $('playlist-add-modal').classList.remove('open'); }
+
+async function loadAddablePlaylists() {
+  const box = $('add-playlist-list');
+  box.innerHTML = '<div class="search-empty">Cargando tus playlists...</div>';
+  try {
+    const d = await api('/api/spotify/addable-playlists');
+    spAddablePlaylists = d.playlists || [];
+    renderAddablePlaylists();
+  } catch (e) {
+    box.innerHTML = '<div class="search-empty">No se pudieron cargar tus playlists: ' + esc(e.message) + '</div>';
+  }
+}
+
+function renderAddablePlaylists() {
+  const box = $('add-playlist-list');
+  box.innerHTML = '';
+  if (!spAddablePlaylists.length) {
+    box.innerHTML = '<div class="search-empty">No he encontrado playlists creadas por ti. Crea una playlist privada en Spotify y vuelve a probar.</div>';
+    return;
+  }
+  spAddablePlaylists.forEach(p => {
+    const el = document.createElement('div');
+    el.className = 'add-playlist-item';
+    const im = p.image ? `<img src="${img(p.image)}" alt="">` : `<div style="width:42px;height:42px;border-radius:8px;background:#242631;display:grid;place-items:center;color:#858b9b;font-size:18px">♫</div>`;
+    const count = p.tracks_total == null ? '' : ' · ' + p.tracks_total + ' canciones';
+    el.innerHTML = `${im}<div style="min-width:0"><div class="add-playlist-name">${esc(p.name || 'Playlist')}</div><div class="add-playlist-sub">${esc('Tu playlist' + count)}</div></div><span class="add-playlist-tag">EDITABLE</span>`;
+    el.onclick = () => addCurrentTrackToPlaylist(p);
+    box.appendChild(el);
+  });
+}
+
+async function addCurrentTrackToPlaylist(p) {
+  const tr = spCurrent.track;
+  if (!tr || !tr.uri) { toast('No hay canción seleccionada'); return; }
+  try {
+    await api('/api/spotify/add-to-playlist', { method: 'POST', body: JSON.stringify({ playlist_id: p.id, track_uri: tr.uri }) });
+    toast('Añadida a ' + (p.name || 'playlist'));
+    closeAddToPlaylistModal();
+  } catch (e) {
+    toast(e.message, 6500);
+  }
 }
 
 function refreshSpotifyAfterCommand() {
@@ -657,11 +1159,26 @@ function optimisticTrack(track) {
   renderSpotify();
 }
 
+async function loadLikedTracks(force = false) {
+  if (spLikedTracksCache.length && !force) return spLikedTracksCache;
+  const d = await api('/api/spotify/liked-tracks');
+  spLikedTracksCache = d.tracks || [];
+  return spLikedTracksCache;
+}
+
 async function spPlayPlaylist(p) {
   try {
     stopEmbedIfNeeded(true);
     spLastCommandAt = Date.now();
-    const res = await api('/api/spotify/play', { method: 'POST', body: JSON.stringify({ context_uri: p.uri, device_id: selectedDeviceId() }) });
+    let body;
+    if (p.liked_special) {
+      const tracks = await loadLikedTracks();
+      if (!tracks.length) { toast('No tienes canciones en Me gusta'); return; }
+      body = { uris: tracks.slice(0, 50).map(t => t.uri), device_id: selectedDeviceId() };
+    } else {
+      body = { context_uri: p.uri, device_id: selectedDeviceId() };
+    }
+    const res = await api('/api/spotify/play', { method: 'POST', body: JSON.stringify(body) });
     if (res.current) applySpotifyCurrent(res.current, true);
     refreshSpotifyAfterCommand();
   } catch (e) { toast(e.message); }
@@ -670,12 +1187,14 @@ async function spPlayPlaylist(p) {
 async function openTracks(p) {
   $('drawer-title').textContent = p.name;
   $('drawer-count').textContent = plCountText(p.tracks_total);
-  $('drawer-img').src = img(p.image);
+  $('drawer-img').src = p.liked_special ? LIKED_COVER : img(p.image);
   $('tracks-list').innerHTML = '<div style="padding:20px;color:#777">Cargando...</div>';
   $('tracks-drawer').classList.add('open');
   try {
-    const d = await api(`/api/spotify/playlists/${encodeURIComponent(p.id)}/tracks`);
+    const endpoint = p.liked_special ? '/api/spotify/liked-tracks' : `/api/spotify/playlists/${encodeURIComponent(p.id)}/tracks`;
+    const d = await api(endpoint);
     const tracks = d.tracks || [];
+    if (p.liked_special) spLikedTracksCache = tracks;
     if (d.total !== undefined && d.total !== null) {
       p.tracks_total = d.total;
       $('drawer-count').textContent = plCountText(d.total);
@@ -684,23 +1203,66 @@ async function openTracks(p) {
     $('tracks-list').innerHTML = '';
     tracks.forEach((t, i) => {
       const el = document.createElement('div');
-      el.className = 'track-item';
-      el.innerHTML = `<div class="track-num">${i + 1}</div><img src="${img(t.image)}"><div class="track-mini"><div class="n">${esc(t.name)}</div><div class="a">${esc(t.artists)}</div></div><div class="dur">${fmt(t.duration_ms)}</div>`;
+      const canRemove = !!p.can_modify;
+      el.className = 'track-item' + (canRemove ? ' removable' : '');
+      const removeHtml = canRemove ? '<button class="track-remove" title="Quitar canción de esta playlist">🗑</button>' : '';
+      el.innerHTML = `<div class="track-num">${i + 1}</div><img src="${img(t.image)}"><div class="track-mini"><div class="n">${esc(t.name)}</div><div class="a">${esc(t.artists)}</div></div><div class="dur">${fmt(t.duration_ms)}</div>${removeHtml}`;
       el.onclick = async () => {
         try {
           stopEmbedIfNeeded(true);
           optimisticTrack(t);
-          const res = await api('/api/spotify/play', { method: 'POST', body: JSON.stringify({ context_uri: p.uri, track_uri: t.uri, device_id: selectedDeviceId() }) });
+          let body;
+          if (p.liked_special) {
+            // "Me gusta" no es una playlist con contexto fiable: mandamos una ventana
+            // de canciones a partir de la pulsada para que anterior/siguiente funcionen.
+            body = { uris: tracks.slice(i, i + 50).map(x => x.uri), device_id: selectedDeviceId() };
+          } else {
+            body = { context_uri: p.uri, track_uri: t.uri, device_id: selectedDeviceId() };
+          }
+          const res = await api('/api/spotify/play', { method: 'POST', body: JSON.stringify(body) });
           if (res.current) applySpotifyCurrent(res.current, true);
           refreshSpotifyAfterCommand();
           closeTracks();
         } catch (e) { toast(e.message); }
       };
+      const removeBtn = el.querySelector('.track-remove');
+      if (removeBtn) {
+        removeBtn.onclick = async (ev) => {
+          ev.stopPropagation();
+          await removeTrackFromPlaylist(p, t, el, removeBtn);
+        };
+      }
       $('tracks-list').appendChild(el);
     });
     if (!tracks.length) $('tracks-list').innerHTML = '<div style="padding:20px;color:#777">Sin canciones disponibles.</div>';
   } catch (e) {
-    renderSpotifyPlaylistEmbedFallback(p, e.status === 403);
+    if (p.liked_special) {
+      $('tracks-list').innerHTML = '<div style="padding:20px;color:#999">No se pudieron leer tus canciones de Me gusta. Si acabas de añadir permisos, limpia el token en /setup y reconecta Spotify para conceder user-library-read.</div>';
+    } else {
+      renderSpotifyPlaylistEmbedFallback(p, e.status === 403);
+    }
+  }
+}
+
+async function removeTrackFromPlaylist(p, t, rowEl, btn) {
+  if (!p || !p.id || !t || !t.uri) { toast('No se puede quitar esta canción'); return; }
+  if (!p.can_modify) { toast('Solo puedes quitar canciones de playlists tuyas o colaborativas'); return; }
+  const ok = confirm(`¿Quitar "${t.name || 'esta canción'}" de "${p.name || 'esta playlist'}"?`);
+  if (!ok) return;
+  const oldText = btn ? btn.textContent : '';
+  if (btn) { btn.disabled = true; btn.textContent = '…'; }
+  try {
+    await api('/api/spotify/remove-from-playlist', { method: 'POST', body: JSON.stringify({ playlist_id: p.id, track_uri: t.uri }) });
+    if (rowEl) rowEl.remove();
+    if (Number.isFinite(Number(p.tracks_total))) {
+      p.tracks_total = Math.max(0, Number(p.tracks_total) - 1);
+      $('drawer-count').textContent = plCountText(p.tracks_total);
+      updatePlaylistCount(p.id, p.tracks_total);
+    }
+    toast('Canción quitada de la playlist');
+  } catch (e) {
+    toast(e.message + ' · Solo funciona en playlists tuyas o colaborativas');
+    if (btn) { btn.disabled = false; btn.textContent = oldText || '🗑'; }
   }
 }
 
@@ -708,30 +1270,19 @@ function renderSpotifyPlaylistEmbedFallback(p, restricted) {
   $('drawer-count').textContent = 'Vista Spotify' + (p.tracks_total != null ? ' · ' + plCountText(p.tracks_total) : '');
   const list = $('tracks-list');
   list.innerHTML = '';
+  stopEmbedIfNeeded(true);
+  spLastEmbedUri = '';
+
   const wrap = document.createElement('div');
   wrap.className = 'embed-fallback';
-
-  const note = document.createElement('div');
-  note.className = 'embed-note';
-  note.innerHTML = restricted
-    ? 'Spotify no deja leer esta playlist por API. La mostramos con el reproductor oficial, pero si pulsas una canción intentaré pasarla automáticamente al player principal para que funcionen carátula, siguiente, atrás y volumen.'
-    : 'No se han podido leer las canciones por API. La mostramos con el reproductor oficial de Spotify.';
-
-  const sync = document.createElement('div');
-  sync.className = 'embed-sync';
-  sync.textContent = 'Consejo: el botón verde lanza la playlist completa en el player principal. Si eliges una canción dentro del embed, el dashboard intentará tomar el control automáticamente.';
 
   const actions = document.createElement('div');
   actions.className = 'embed-actions';
   const play = document.createElement('button');
   play.className = 'mini-btn green';
-  play.textContent = '▶ Reproducir en player principal';
+  play.textContent = '▶ Reproducir lista entera';
   play.onclick = async () => { await spPlayPlaylist(p); closeTracks(); };
-  const open = document.createElement('button');
-  open.className = 'mini-btn';
-  open.textContent = 'Abrir en Spotify';
-  open.onclick = () => window.open('https://open.spotify.com/playlist/' + encodeURIComponent(p.id), '_blank');
-  actions.appendChild(play); actions.appendChild(open);
+  actions.appendChild(play);
 
   const hostId = 'embed-' + Date.now() + '-' + Math.random().toString(16).slice(2);
   const embedHost = document.createElement('div');
@@ -740,23 +1291,25 @@ function renderSpotifyPlaylistEmbedFallback(p, restricted) {
   const target = document.createElement('div');
   target.id = 'sp-embed-target-' + hostId;
   embedHost.appendChild(target);
-  wrap.appendChild(note); wrap.appendChild(sync); wrap.appendChild(actions); wrap.appendChild(embedHost); list.appendChild(wrap);
+
+  wrap.appendChild(actions);
+  wrap.appendChild(embedHost);
+  list.appendChild(wrap);
 
   ensureSpotifyIframeApi().then(IFrameAPI => {
     IFrameAPI.createController(target, { uri: p.uri || ('spotify:playlist:' + p.id), width: '100%', height: '100%', theme: 'dark' }, controller => {
       spEmbedControllers[hostId] = controller;
-      const onEmbed = e => {
-        const data = e && e.data ? e.data : {};
-        spEmbedActive = true;
-        spEmbedCurrentController = controller;
-        if (typeof data.isPaused === 'boolean') {
-          $('sp-play').textContent = data.isPaused ? '▶' : '❚❚';
-          $('sp-bars').classList.toggle('paused', data.isPaused);
-        }
-        if (data.playingURI) takeOverEmbedTrack(p, data.playingURI);
-      };
-      controller.addListener('playback_started', onEmbed);
-      controller.addListener('playback_update', onEmbed);
+      spEmbedCurrentController = controller;
+      spEmbedActive = true;
+      // Cuando el usuario pulsa una canción dentro del embed, Spotify dispara
+      // playback_update con el playingURI de la pista. La reenganchamos al player principal.
+      controller.addListener('playback_update', e => {
+        const d = e && e.data;
+        if (!d || d.isPaused !== false) return;            // solo cuando empieza a sonar de verdad
+        const uri = d.playingURI || '';
+        if (!String(uri).startsWith('spotify:track:')) return;
+        takeOverEmbedTrack(p, uri);
+      });
     });
   }).catch(() => {
     embedHost.innerHTML = `<iframe src="${spotifyEmbedUrl(p.id)}" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
@@ -768,6 +1321,8 @@ async function takeOverEmbedTrack(p, trackUri) {
   if (spEmbedTakingOver || spLastEmbedUri === trackUri) return;
   spEmbedTakingOver = true;
   spLastEmbedUri = trackUri;
+  // Cortamos cuanto antes el audio del embed para no doblar la reproducción.
+  try { if (spEmbedCurrentController && spEmbedCurrentController.pause) spEmbedCurrentController.pause(); } catch (e) {}
   try {
     // Si el embed nos da la URI de la canción, la reenviamos al player principal.
     // Así la reproducción pasa a Spotify Connect y los controles grandes funcionan.
@@ -776,9 +1331,13 @@ async function takeOverEmbedTrack(p, trackUri) {
     if (res.current) applySpotifyCurrent(res.current, true);
     refreshSpotifyAfterCommand();
     closeTracks();
-    toast('Control pasado al player principal');
+    toast('▶ Reproduciendo en el reproductor principal');
   } catch (e) {
+    // No hay dispositivo de Spotify Connect o falló: no dejamos al usuario bloqueado.
+    // Permitimos que vuelva a intentarlo pulsando otra vez la canción.
+    spLastEmbedUri = '';
     console.warn('No se pudo pasar el embed al player principal', e);
+    toast('Abre Spotify en tu dispositivo y selecciónalo arriba para que suene en el reproductor principal');
   } finally {
     setTimeout(() => { spEmbedTakingOver = false; }, 1200);
   }
@@ -822,6 +1381,7 @@ async function spPrev() {
 
 async function spVolume(v) {
   try {
+    spVolLastChangeAt = Date.now();
     if (spCurrent.device) spCurrent.device.volume_percent = Number(v);
     await api('/api/spotify/volume', { method: 'POST', body: JSON.stringify({ volume: v, device_id: selectedDeviceId() }) });
   } catch (e) { toast(e.message); }
@@ -859,6 +1419,86 @@ async function spToggleRepeat() {
   } catch (e) { toast(e.message); }
 }
 
+
+// ─────────────────────────────────────────────────────────────
+// Spotify Search
+// ─────────────────────────────────────────────────────────────
+function openSpotifySearch() {
+  $('spotify-search-modal').classList.add('open');
+  const input = $('sp-search-input');
+  setTimeout(() => input.focus(), 50);
+}
+function closeSpotifySearch() { $('spotify-search-modal').classList.remove('open'); }
+function typeLabel(type) {
+  if (type === 'track') return 'Canción';
+  if (type === 'artist') return 'Artista';
+  if (type === 'playlist') return 'Lista';
+  return 'Spotify';
+}
+function fallbackSearchImage(type) {
+  const text = type === 'artist' ? '👤' : type === 'playlist' ? '♫' : '♪';
+  return `<div style="width:44px;height:44px;border-radius:8px;background:#242631;display:grid;place-items:center;color:#858b9b;font-size:19px">${text}</div>`;
+}
+async function spotifySearch() {
+  const q = $('sp-search-input').value.trim();
+  const box = $('sp-search-results');
+  if (q.length < 2) {
+    box.innerHTML = '<div class="search-empty">Escribe al menos 2 caracteres.</div>';
+    return;
+  }
+  box.innerHTML = '<div class="search-empty">Buscando...</div>';
+  try {
+    const d = await api('/api/spotify/search?q=' + encodeURIComponent(q));
+    renderSpotifySearchResults(d.results || []);
+  } catch (e) {
+    box.innerHTML = '<div class="search-empty">No se pudo buscar en Spotify: ' + esc(e.message) + '</div>';
+  }
+}
+function renderSpotifySearchResults(results) {
+  const box = $('sp-search-results');
+  box.scrollTop = 0;
+  box.innerHTML = '';
+  if (!results.length) {
+    box.innerHTML = '<div class="search-empty">Sin resultados.</div>';
+    return;
+  }
+  results.forEach(r => {
+    const el = document.createElement('div');
+    el.className = 'search-result result-' + esc(r.type || 'spotify');
+    const imageHtml = r.image ? `<img src="${img(r.image)}" alt="">` : fallbackSearchImage(r.type);
+    const right = (r.type === 'playlist')
+      ? `<button class="search-add-btn" title="Añadir esta lista a mi biblioteca">+ Biblioteca</button>`
+      : `<span class="search-type">${typeLabel(r.type)}</span>`;
+    el.innerHTML = `${imageHtml}<div style="min-width:0"><div class="search-result-name">${esc(r.name || 'Spotify')}</div><div class="search-result-sub">${esc(r.subtitle || typeLabel(r.type))}</div></div>${right}`;
+    el.onclick = () => playSpotifySearchResult(r);
+    const addBtn = el.querySelector('.search-add-btn');
+    if (addBtn) addBtn.onclick = (ev) => { ev.stopPropagation(); followPlaylistFromSearch(r); };
+    box.appendChild(el);
+  });
+}
+async function playSpotifySearchResult(r) {
+  if (!r || !r.uri) return;
+  if (r.type === 'playlist') {
+    closeSpotifySearch();
+    addTemporaryPlaylistFromSearch(r, true);
+    toast('Lista añadida temporalmente a Mis playlists');
+    return;
+  }
+  try {
+    let body = { device_id: selectedDeviceId() };
+    if (r.type === 'track') body.track_uri = r.uri;
+    else body.context_uri = r.uri;
+    const res = await api('/api/spotify/play', { method: 'POST', body: JSON.stringify(body) });
+    if (r.type === 'track') {
+      optimisticTrack({ uri: r.uri, id: r.id, name: r.name, artists: r.subtitle, album: '', image: r.image, duration_ms: r.duration_ms || 0 });
+    }
+    if (res.current) applySpotifyCurrent(res.current, true);
+    refreshSpotifyAfterCommand();
+    closeSpotifySearch();
+    toast('▶ Reproduciendo ' + typeLabel(r.type).toLowerCase());
+  } catch (e) { toast(e.message); }
+}
+
 // ─────────────────────────────────────────────────────────────
 // Weather
 // ─────────────────────────────────────────────────────────────
@@ -879,11 +1519,10 @@ function weatherIcon(code) {
 }
 
 async function weatherLoad() {
-  const city = $('w-city-input').value.trim() || 'Móstoles';
-  localStorage.setItem('weather_city', city);
+  const city = $('w-city-input').value.trim() || (statusData.weather_city || statusData.default_city || 'Móstoles');
   $('w-status').textContent = 'cargando';
   try {
-    const d = await api('/api/weather?city=' + encodeURIComponent(city));
+    const d = await api('/api/weather?city=' + encodeURIComponent(city) + '&save=1');
     const c = d.current;
     $('w-status').textContent = 'actualizado';
     $('w-status').className = 'badge ok';
@@ -891,6 +1530,8 @@ async function weatherLoad() {
     $('w-temp').textContent = c.temp + '°';
     $('w-desc').textContent = c.desc;
     $('w-place').textContent = d.city + ', ' + d.country;
+    $('w-city-input').value = d.city || city;
+    statusData.weather_city = d.city || city;
     $('w-feels').textContent = c.feels + '°C';
     $('w-hum').textContent = c.humidity + '%';
     $('w-wind').textContent = c.wind + ' km/h';
@@ -991,8 +1632,11 @@ function renderEvents() {
     const time = e.all_day ? 'Todo el día' : st.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
     const el = document.createElement('div');
     el.className = 'event';
+    el.title = 'Editar evento';
     el.innerHTML = `<div class="ev-date">${date}<br>${time}</div><div style="min-width:0"><div class="ev-title">${esc(e.summary)}</div>${e.location ? `<div class="ev-loc">${esc(e.location)}</div>` : ''}</div><button class="icon-btn trash" title="Borrar">🗑</button>`;
-    el.querySelector('button').onclick = () => deleteEvent(e);
+    el.onclick = () => openEditEventModal(e);
+    const delBtn = el.querySelector('button');
+    delBtn.onclick = ev => { ev.stopPropagation(); deleteEvent(e); };
     box.appendChild(el);
   });
   if (!upcoming.length) box.innerHTML = '<div style="color:#777;padding:12px">Sin eventos próximos este mes.</div>';
@@ -1044,8 +1688,12 @@ function renderDayEvents(events) {
       : st.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) + (en ? ' - ' + en.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) : '');
     const el = document.createElement('div');
     el.className = 'day-event';
+    el.title = 'Editar evento';
     el.innerHTML = `<div class="day-event-time">${time}</div><div style="min-width:0"><div class="day-event-title">${esc(e.summary)}</div>${e.location ? `<div class="day-event-sub">${esc(e.location)}</div>` : ''}</div><button class="icon-btn trash" title="Borrar">🗑</button>`;
-    el.querySelector('button').onclick = async () => {
+    el.onclick = () => openEditEventModal(e);
+    const delBtn = el.querySelector('button');
+    delBtn.onclick = async ev => {
+      ev.stopPropagation();
       await deleteEvent(e);
       if (calDayModalDate) openDayModal(calDayModalDate);
     };
@@ -1054,12 +1702,58 @@ function renderDayEvents(events) {
 }
 
 function closeDayModal() { $('day-modal').classList.remove('open'); }
-function addEventFromDayModal() { const d = calDayModalDate || selectedDate || new Date(); closeDayModal(); openEventModal(d); }
-function openEventModal(d) { selectedDate = d; $('ev-date').value = isoDate(d); $('ev-title').value = ''; $('ev-location').value = ''; $('ev-desc').value = ''; $('ev-allday').checked = false; toggleAllDay(); $('event-modal').classList.add('open'); setTimeout(() => $('ev-title').focus(), 50); }
-function closeEventModal() { $('event-modal').classList.remove('open'); }
+function addEventFromDayModal() { const d = calDayModalDate || selectedDate || new Date(); closeDayModal(); openCreateEventModal(d); }
+function closeEventModal() { $('event-modal').classList.remove('open'); editingEvent = null; }
 function toggleAllDay() { $('time-row').style.display = $('ev-allday').checked ? 'none' : 'grid'; }
 
-async function createEvent() {
+function timeFromDateValue(value, fallback='18:00') {
+  if (!value || /^\d{4}-\d{2}-\d{2}$/.test(value)) return fallback;
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return fallback;
+  return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+}
+function dateFromEventValue(value) {
+  if (!value) return isoDate(new Date());
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? isoDate(new Date()) : isoDate(d);
+}
+
+function openCreateEventModal(d) {
+  editingEvent = null;
+  selectedDate = d;
+  $('event-modal-title').textContent = 'Nuevo evento';
+  $('ev-save-btn').textContent = 'Guardar';
+  $('ev-date').value = isoDate(d);
+  $('ev-title').value = '';
+  $('ev-location').value = '';
+  $('ev-desc').value = '';
+  $('ev-start').value = '18:00';
+  $('ev-end').value = '19:00';
+  $('ev-allday').checked = false;
+  toggleAllDay();
+  $('event-modal').classList.add('open');
+  setTimeout(() => $('ev-title').focus(), 50);
+}
+function openEventModal(d) { openCreateEventModal(d); }
+
+function openEditEventModal(e) {
+  editingEvent = e;
+  $('event-modal-title').textContent = 'Editar evento';
+  $('ev-save-btn').textContent = 'Guardar cambios';
+  $('ev-title').value = e.summary || '';
+  $('ev-date').value = dateFromEventValue(e.start);
+  $('ev-location').value = e.location || '';
+  $('ev-desc').value = e.description || '';
+  $('ev-allday').checked = !!e.all_day;
+  $('ev-start').value = timeFromDateValue(e.start, '18:00');
+  $('ev-end').value = timeFromDateValue(e.end, '19:00');
+  toggleAllDay();
+  $('event-modal').classList.add('open');
+  setTimeout(() => $('ev-title').focus(), 50);
+}
+
+async function saveEvent() {
   const title = $('ev-title').value.trim();
   if (!title) { toast('Pon un título'); return; }
   const date = $('ev-date').value;
@@ -1067,15 +1761,23 @@ async function createEvent() {
   const body = { title, date, all_day: all, location: $('ev-location').value.trim(), description: $('ev-desc').value.trim() };
   if (!all) { body.start = `${date}T${$('ev-start').value}:00`; body.end = `${date}T${$('ev-end').value}:00`; }
   try {
-    await api('/api/calendar/events', { method: 'POST', body: JSON.stringify(body) });
+    if (editingEvent && editingEvent.id) {
+      await api('/api/calendar/events/' + encodeURIComponent(editingEvent.id), { method: 'PATCH', body: JSON.stringify(body) });
+      toast('Evento actualizado');
+    } else {
+      await api('/api/calendar/events', { method: 'POST', body: JSON.stringify(body) });
+      toast('Evento creado');
+    }
     closeEventModal();
-    toast('Evento creado');
     await calLoadEvents();
-    const createdDate = new Date(date + 'T12:00:00');
-    if (selectedDate && sameDay(createdDate, selectedDate)) openDayModal(createdDate);
+    const eventDate = new Date(date + 'T12:00:00');
+    if (calDayModalDate && sameDay(eventDate, calDayModalDate)) openDayModal(calDayModalDate);
+    else if (selectedDate && sameDay(eventDate, selectedDate)) openDayModal(eventDate);
   }
   catch (e) { toast(e.message); }
 }
+
+async function createEvent() { return saveEvent(); }
 
 async function deleteEvent(e) {
   if (!confirm('¿Borrar "' + e.summary + '"?')) return;
@@ -1083,16 +1785,16 @@ async function deleteEvent(e) {
   catch (err) { toast(err.message); }
 }
 
-(function init() {
-  const c = localStorage.getItem('weather_city');
-  if (c) $('w-city-input').value = c;
-  loadStatus();
+(async function init() {
+  await loadStatus();
   weatherLoad();
   setInterval(() => spLoadCurrent(false), 5000);
   setInterval(spLoadDevices, 30000);
   setInterval(weatherLoad, 10 * 60 * 1000);
   setInterval(loadStatus, 60 * 1000);
   $('event-modal').onclick = e => { if (e.target.id === 'event-modal') closeEventModal(); };
+  $('spotify-search-modal').onclick = e => { if (e.target.id === 'spotify-search-modal') closeSpotifySearch(); };
+  $('playlist-add-modal').onclick = e => { if (e.target.id === 'playlist-add-modal') closeAddToPlaylistModal(); };
 })();
 
 </script>

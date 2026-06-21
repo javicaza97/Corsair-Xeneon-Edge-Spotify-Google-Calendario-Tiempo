@@ -1,50 +1,65 @@
 # XENEON Dashboard Local
 
-Dashboard local para usar en una pantalla Corsair XENEON/iCUE mediante iframe. Está pensado para ejecutarse en Windows y mostrar tres módulos:
+Dashboard local para usar en una pantalla Corsair XENEON/iCUE mediante iframe. La aplicación se ejecuta en el PC, escucha por defecto en `127.0.0.1:5050` y muestra una interfaz compacta con tres módulos principales:
 
-- **Spotify**: carátula, reproducción actual, controles básicos y playlists.
-- **El tiempo**: clima actual y previsión de próximos días.
-- **Google Calendar**: calendario mensual, próximos eventos, consulta de eventos por día, creación y borrado de eventos.
+- **Spotify**: reproducción actual, controles, dispositivos, playlists, búsqueda, enlaces de playlists especiales y gestión básica de canciones.
+- **Tiempo**: clima actual, sensación térmica, humedad, viento, índice UV y previsión de varios días.
+- **Google Calendar**: calendario mensual, próximos eventos, eventos por día, creación y borrado de eventos.
 
-La autenticación de Spotify y Google se hace desde el navegador normal del PC en `http://127.0.0.1:5050/setup`. La pantalla XENEON solo carga el dashboard local, así se evitan los problemas de login dentro de iframes/WebViews.
+La autenticación de Spotify y Google se realiza desde el navegador normal del PC en:
+
+```txt
+http://127.0.0.1:5050/setup
+```
+
+La pantalla XENEON carga únicamente el dashboard local, evitando problemas de login dentro de iframes o WebViews.
 
 ---
 
 ## 1. Requisitos previos
 
-### Sistema recomendado
+Antes de ejecutar `install.bat`, el sistema debe tener instalado:
 
 - Windows 10 o Windows 11.
 - Python 3.10 o superior.
-- Conexión a internet para Spotify, Google Calendar y el clima.
-- Una cuenta de Spotify.
-- Una cuenta de Google con acceso a Google Calendar.
+- Python añadido al `PATH`.
+- Navegador moderno.
+- Conexión a internet para instalar dependencias y conectar las APIs.
+- Cuenta de Spotify.
+- Cuenta de Google con Google Calendar.
+- Una aplicación creada en Spotify Developer Dashboard.
+- Un proyecto de Google Cloud con Google Calendar API habilitada.
 
-### Instalar Python
+### 1.1 Comprobar Python
 
-1. Descarga Python desde `https://www.python.org/downloads/windows/`.
-2. Durante la instalación marca la opción:
-
-```txt
-Add python.exe to PATH
-```
-
-3. Comprueba que Python está disponible abriendo PowerShell o CMD:
+Abre CMD o PowerShell y ejecuta:
 
 ```powershell
 py --version
 ```
 
-Si aparece una versión de Python, puedes continuar.
+Debe aparecer una versión de Python 3.10 o superior.
+
+Si Windows no reconoce el comando, instala Python desde:
+
+```txt
+https://www.python.org/downloads/windows/
+```
+
+Durante la instalación marca:
+
+```txt
+Add python.exe to PATH
+```
+
+Después cierra y vuelve a abrir CMD/PowerShell.
 
 ---
 
 ## 2. Estructura del proyecto
 
-La estructura limpia del proyecto es esta:
-
 ```txt
-xeneon-dashboard-local/
+xeneon_dashboard/
 ├── app.py
 ├── requirements.txt
 ├── install.bat
@@ -55,6 +70,7 @@ xeneon-dashboard-local/
 ├── install_autostart_registry.bat
 ├── uninstall_autostart_registry.bat
 ├── stop_dashboard.bat
+├── .env
 ├── .env.example
 ├── .gitignore
 ├── README.md
@@ -64,11 +80,25 @@ xeneon-dashboard-local/
     └── .gitkeep
 ```
 
+La carpeta `data/` se usa para guardar datos locales de funcionamiento:
+
+- tokens OAuth de Spotify y Google,
+- ajustes persistentes,
+- caché de playlists,
+- orden personalizado de playlists,
+- playlists fijadas,
+- logs,
+- PID del proceso local.
+
+Por seguridad, el repositorio solo debe incluir `data/.gitkeep`. El resto de ficheros generados dentro de `data/` no deben subirse a GitHub.
+
 ---
 
-## 3. Instalación del proyecto
+## 3. Instalación rápida
 
-1. Clona o descomprime el proyecto en una ruta fija, por ejemplo:
+1. Clona o descarga el repositorio.
+
+2. Descomprime o coloca el proyecto en una ruta fija, por ejemplo:
 
 ```txt
 C:\XENEON-Dashboard
@@ -80,276 +110,242 @@ También puede estar en una ruta con espacios, por ejemplo:
 C:\Users\tu_usuario\Documents\Botones xeneon\xeneon_dashboard
 ```
 
-2. Ejecuta:
+3. Ejecuta:
 
 ```bat
 install.bat
 ```
 
-Ese script hace lo siguiente:
+El instalador realiza estas acciones:
 
 - crea el entorno virtual `.venv`,
 - instala las dependencias de `requirements.txt`,
-- crea `.env` a partir de `.env.example` si todavía no existe.
+- crea `.env` a partir de `.env.example` si no existe.
 
-3. Edita el archivo `.env` y rellena tus credenciales de Spotify y Google.
+4. Edita `.env` y configura tus credenciales reales de Spotify y Google.
 
-Ejemplo:
+5. Arranca el dashboard:
 
-```env
-HOST=127.0.0.1
-PORT=5050
-DEFAULT_CITY=Móstoles
+```bat
+start_dashboard.bat
+```
 
-SPOTIFY_CLIENT_ID=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+6. Abre la pantalla de configuración:
 
-GOOGLE_CLIENT_ID=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=tu_google_client_secret
+```txt
+http://127.0.0.1:5050/setup
+```
 
-SPOTIFY_PLAYLIST_CACHE_SECONDS=900
+7. Conecta Spotify y Google Calendar desde esa pantalla.
+
+8. Abre el dashboard:
+
+```txt
+http://127.0.0.1:5050/dashboard.html
 ```
 
 ---
 
-## 4. Configurar Spotify API
+## 4. Fichero `.env`
 
-### 4.1 Crear la aplicación en Spotify for Developers
+El proyecto incluye un `.env` de ejemplo, sin credenciales reales.
 
-1. Entra en `https://developer.spotify.com/dashboard`.
-2. Pulsa **Create app**.
-3. Pon un nombre, por ejemplo:
+Ejemplo:
 
-```txt
-XENEON Dashboard Local
+```env
+# Servidor local
+HOST=127.0.0.1
+PORT=5050
+DEFAULT_CITY=Móstoles
+
+# Spotify for Developers
+SPOTIFY_CLIENT_ID=your_spotify_client_id
+
+# Google Cloud / Google Calendar API
+GOOGLE_CLIENT_ID=your_google_client_id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+
+# Cache de playlists para evitar llamadas excesivas a Spotify
+SPOTIFY_PLAYLIST_CACHE_SECONDS=900
 ```
 
-4. En **Redirect URIs** añade exactamente:
+No subas credenciales reales a GitHub. Si ya has conectado Spotify o Google, los tokens se guardan en `data/tokens.json`; ese fichero tampoco debe subirse.
+
+---
+
+## 5. Configurar Spotify API
+
+Esta aplicación usa OAuth con PKCE para Spotify, por lo que solo necesita `SPOTIFY_CLIENT_ID` en el `.env`.
+
+### 5.1 Crear la aplicación en Spotify
+
+1. Entra en Spotify Developer Dashboard.
+2. Crea una nueva aplicación.
+3. Copia el **Client ID**.
+4. En la configuración de la app, añade esta Redirect URI exacta:
 
 ```txt
 http://127.0.0.1:5050/auth/spotify/callback
 ```
 
 5. Guarda los cambios.
-6. Copia el **Client ID** y ponlo en `.env`:
+
+### 5.2 Configurar `.env`
+
+En el fichero `.env`:
 
 ```env
-SPOTIFY_CLIENT_ID=tu_client_id
+SPOTIFY_CLIENT_ID=tu_spotify_client_id
 ```
 
-No hace falta guardar `Client Secret` para Spotify, porque este proyecto usa OAuth con PKCE para Spotify.
+### 5.3 Conectar Spotify
 
-### 4.2 Permisos usados por Spotify
+1. Arranca el dashboard:
 
-El proyecto solicita permisos para:
+```bat
+start_dashboard.bat
+```
 
-- leer el estado de reproducción,
-- controlar la reproducción,
-- leer playlists privadas/colaborativas,
-- leer datos básicos de la cuenta.
-
-Nota: algunas acciones de reproducción de la Web API de Spotify pueden requerir Spotify Premium. Además, determinadas playlists públicas que no son tuyas pueden no permitir leer todas las canciones por API; en ese caso el dashboard usa la reproducción de la playlist completa o el fallback disponible.
-
-### 4.3 Cambio de refresh tokens de Spotify
-
-El backend gestiona tokens caducados o revocados. Si Spotify devuelve `invalid_grant` o un error equivalente al renovar el token, el proyecto elimina el token viejo y te obliga a reconectar desde `/setup`.
-
-Para reconectar manualmente:
+2. Abre:
 
 ```txt
 http://127.0.0.1:5050/setup
 ```
 
-Y pulsa **Limpiar token Spotify** y después **Conectar Spotify**.
+3. Pulsa **Conectar Spotify**.
+4. Acepta los permisos solicitados.
+
+### 5.4 Error típico: `INVALID_CLIENT: Invalid redirect URI`
+
+Revisa que la Redirect URI configurada en Spotify sea exactamente:
+
+```txt
+http://127.0.0.1:5050/auth/spotify/callback
+```
+
+Debe coincidir exactamente con la que usa la aplicación, incluyendo:
+
+- `http`,
+- `127.0.0.1`,
+- puerto `5050`,
+- ruta `/auth/spotify/callback`,
+- sin barras extra al final.
 
 ---
 
-## 5. Configurar Google Calendar API
+## 6. Configurar Google Calendar API
 
-### 5.1 Crear o seleccionar proyecto en Google Cloud
+La integración de Google Calendar usa OAuth 2.0 con una aplicación web.
 
-1. Entra en `https://console.cloud.google.com/`.
-2. Crea un proyecto nuevo o selecciona uno existente.
-3. Ve a **APIs y servicios**.
-4. Busca y habilita:
+### 6.1 Crear proyecto en Google Cloud
+
+1. Entra en Google Cloud Console.
+2. Crea un proyecto o usa uno existente.
+3. Ve a **APIs & Services**.
+4. Habilita la API:
 
 ```txt
 Google Calendar API
 ```
 
-### 5.2 Configurar pantalla de consentimiento OAuth
+### 6.2 Configurar pantalla de consentimiento OAuth
 
-1. Ve a **Google Auth Platform** o **Pantalla de consentimiento OAuth**.
-2. Configura la app como **External** si es para una cuenta personal.
-3. Pon nombre de app, correo de soporte y correo del desarrollador.
-4. Si la app queda en modo **Testing**, añade tu cuenta de Gmail en **Test users / Usuarios de prueba**.
+1. Ve a **APIs & Services → OAuth consent screen**.
+2. Configura la pantalla de consentimiento.
+3. Para uso personal, puedes dejar la app en modo **Testing**.
+4. Si está en modo Testing, añade tu cuenta de Google como usuario de prueba.
 
-Ejemplo:
+### 6.3 Crear credenciales OAuth
 
-```txt
-tu_correo@gmail.com
-```
-
-Si no añades la cuenta como tester, Google puede mostrar:
-
-```txt
-Error 403: access_denied
-```
-
-### 5.3 Crear credenciales OAuth
-
-1. Ve a **APIs y servicios → Credenciales**.
+1. Ve a **APIs & Services → Credentials**.
 2. Pulsa **Create credentials → OAuth client ID**.
-3. En **Application type**, selecciona:
+3. Tipo de aplicación:
 
 ```txt
 Web application
 ```
 
-4. En **Authorized JavaScript origins** añade:
+4. En **Authorized JavaScript origins**, añade:
 
 ```txt
 http://127.0.0.1:5050
 ```
 
-En esta versión el login lo hace el backend, pero se recomienda dejar este origen autorizado para evitar problemas si se reutiliza el cliente desde navegador/local.
-
-5. En **Authorized redirect URIs** añade exactamente:
+5. En **Authorized redirect URIs**, añade:
 
 ```txt
 http://127.0.0.1:5050/auth/google/callback
 ```
 
 6. Guarda.
-7. Copia el **Client ID** y el **Client Secret** en `.env`:
+7. Copia el **Client ID** y el **Client Secret**.
+
+### 6.4 Configurar `.env`
+
+En el fichero `.env`:
 
 ```env
-GOOGLE_CLIENT_ID=tu_client_id.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=tu_client_secret
+GOOGLE_CLIENT_ID=tu_google_client_id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=tu_google_client_secret
 ```
 
-### 5.4 Permisos usados por Calendar
+### 6.5 Conectar Google Calendar
 
-El proyecto usa el scope:
-
-```txt
-https://www.googleapis.com/auth/calendar.events
-```
-
-Esto permite leer, crear y borrar eventos del calendario principal.
-
----
-
-## 6. Primera ejecución manual
-
-Después de instalar dependencias y configurar `.env`, ejecuta:
+1. Arranca el dashboard:
 
 ```bat
 start_dashboard.bat
 ```
 
-Deberías ver algo como:
-
-```txt
-XENEON Dashboard local arrancado en http://127.0.0.1:5050/dashboard.html
-Setup: http://127.0.0.1:5050/setup
-```
-
-Abre en el navegador:
+2. Abre:
 
 ```txt
 http://127.0.0.1:5050/setup
 ```
 
-Desde esa pantalla puedes conectar:
+3. Pulsa **Conectar Google Calendar**.
+4. Acepta los permisos.
 
-- Spotify,
-- Google Calendar.
+### 6.6 Error típico: `redirect_uri_mismatch`
 
-Luego abre:
+Revisa que Google tenga exactamente esta URI en **Authorized redirect URIs**:
 
 ```txt
-http://127.0.0.1:5050/dashboard.html
+http://127.0.0.1:5050/auth/google/callback
 ```
+
+Y que también tenga este origen en **Authorized JavaScript origins**:
+
+```txt
+http://127.0.0.1:5050
+```
+
+Aunque la aplicación hace el intercambio OAuth desde Flask, mantener el origen JavaScript autorizado ayuda a evitar errores de configuración cuando Google valida el origen de la aplicación web.
 
 ---
 
-## 7. Configurar el iframe en XENEON/iCUE
+## 7. Arranque y parada
 
-En el widget/webview de XENEON/iCUE usa:
-
-```html
-<iframe
-  src="http://127.0.0.1:5050/dashboard.html?v=1"
-  style="width:100%; height:100%; border:0; overflow:hidden;"
-  allow="autoplay; clipboard-write"
-></iframe>
-```
-
-Si iCUE permite poner solo una URL, usa:
-
-```txt
-http://127.0.0.1:5050/dashboard.html?v=1
-```
-
-Puedes cambiar el número de `v=1` a `v=2`, `v=3`, etc. cuando quieras forzar que XENEON no use caché.
-
----
-
-## 8. Arranque automático con Windows
-
-El arranque automático recomendado usa el Registro de Windows:
-
-```txt
-HKCU\Software\Microsoft\Windows\CurrentVersion\Run
-```
-
-No usa la carpeta Inicio ni `.vbs`, así se evita la advertencia de seguridad de Windows.
-
-### 8.1 Instalar autoarranque
-
-Ejecuta:
+### Arrancar con consola
 
 ```bat
-install_autostart_registry.bat
+start_dashboard.bat
 ```
 
-Ese script registra el arranque de:
+URLs principales:
 
 ```txt
-.venv\Scripts\pythonw.exe run_dashboard.pyw
-```
-
-`pythonw.exe` ejecuta el backend sin ventana de consola.
-
-El instalador también arranca el dashboard en ese momento para comprobar que el puerto `5050` responde.
-
-### 8.2 Probar si está levantado
-
-En PowerShell:
-
-```powershell
-Test-NetConnection 127.0.0.1 -Port 5050
-```
-
-Si todo está bien, verás:
-
-```txt
-TcpTestSucceeded : True
-```
-
-También puedes abrir:
-
-```txt
+http://127.0.0.1:5050/setup
 http://127.0.0.1:5050/dashboard.html
 ```
 
-### 8.3 Desinstalar autoarranque
+### Abrir solo la pantalla de configuración
 
 ```bat
-uninstall_autostart_registry.bat
+open_setup.bat
 ```
 
-### 8.4 Parar el dashboard manualmente
+### Parar el dashboard
 
 ```bat
 stop_dashboard.bat
@@ -357,105 +353,311 @@ stop_dashboard.bat
 
 ---
 
-## 9. Logs y solución de problemas
+## 8. Autoarranque en Windows
 
-Los logs locales se guardan en:
+Para que el dashboard arranque automáticamente al iniciar sesión en Windows:
+
+```bat
+install_autostart_registry.bat
+```
+
+Esto crea una entrada en el registro de Windows:
 
 ```txt
-data\autostart_registry.log
-data\dashboard_stdout.log
-data\dashboard_stderr.log
+HKCU\Software\Microsoft\Windows\CurrentVersion\Run
 ```
 
-### El dashboard no abre
+También arranca el dashboard sin dejar una consola abierta usando:
 
-Comprueba si el puerto está abierto:
-
-```powershell
-Test-NetConnection 127.0.0.1 -Port 5050
+```txt
+run_dashboard.pyw
 ```
 
-Si falla, ejecuta:
+Para quitar el autoarranque:
+
+```bat
+uninstall_autostart_registry.bat
+```
+
+Para probar el arranque sin consola:
 
 ```bat
 start_registry_now.bat
 ```
 
-Y revisa:
+---
+
+## 9. Integración con Corsair XENEON / iCUE
+
+La URL recomendada para el iframe o panel web es:
 
 ```txt
-data\dashboard_stderr.log
+http://127.0.0.1:5050/dashboard.html
 ```
 
-### Spotify aparece como no conectado
-
-Abre:
+La autenticación no se debe hacer desde el iframe. Para conectar cuentas usa siempre:
 
 ```txt
 http://127.0.0.1:5050/setup
 ```
 
-Pulsa:
+---
+
+## 10. Datos locales generados
+
+Durante el uso se pueden crear ficheros como:
+
+```txt
+data/tokens.json
+data/oauth_states.json
+data/settings.json
+data/pinned_playlists.json
+data/playlist_order.json
+data/spotify_playlists_cache.json
+data/autostart_registry.log
+data/dashboard_stdout.log
+data/dashboard_stderr.log
+data/dashboard.pid
+```
+
+Estos ficheros son locales y no deben subirse a GitHub.
+
+Para limpiar tokens y reconectar desde cero:
+
+1. Para Spotify, puedes usar el botón **Limpiar token Spotify** en `/setup`.
+2. Para limpiar todo manualmente, para el dashboard y borra:
+
+```txt
+data/tokens.json
+data/oauth_states.json
+```
+
+Después vuelve a abrir:
+
+```txt
+http://127.0.0.1:5050/setup
+```
+
+---
+
+## 11. Actualizar el proyecto desde GitHub
+
+### 11.1 Si ya tienes el repositorio clonado
+
+Entra en la carpeta del proyecto:
+
+```powershell
+cd C:\XENEON-Dashboard
+```
+
+Comprueba cambios locales:
+
+```powershell
+git status
+```
+
+Descarga la última versión:
+
+```powershell
+git pull origin main
+```
+
+Si tu rama se llama `master`:
+
+```powershell
+git pull origin master
+```
+
+Después, si han cambiado dependencias:
+
+```bat
+install.bat
+```
+
+Y arranca de nuevo:
+
+```bat
+start_dashboard.bat
+```
+
+### 11.2 Si quieres subir cambios a tu repositorio GitHub
+
+Desde la carpeta del proyecto:
+
+```powershell
+git status
+```
+
+Añade cambios:
+
+```powershell
+git add .
+```
+
+Crea commit:
+
+```powershell
+git commit -m "Actualiza documentación y limpieza del proyecto"
+```
+
+Sube a GitHub:
+
+```powershell
+git push origin main
+```
+
+Si tu rama se llama `master`:
+
+```powershell
+git push origin master
+```
+
+### 11.3 Si todavía no está conectado a GitHub
+
+Inicializa Git:
+
+```powershell
+git init
+```
+
+Añade el remoto de GitHub:
+
+```powershell
+git remote add origin https://github.com/TU_USUARIO/TU_REPOSITORIO.git
+```
+
+Añade y sube:
+
+```powershell
+git add .
+git commit -m "Primera versión XENEON Dashboard"
+git branch -M main
+git push -u origin main
+```
+
+---
+
+## 12. Limpieza antes de subir a GitHub
+
+Antes de hacer `git add .`, revisa:
+
+```powershell
+git status
+```
+
+No deben aparecer:
+
+```txt
+.env con credenciales reales
+data/tokens.json
+data/oauth_states.json
+data/*.log
+data/*.pid
+.venv/
+__pycache__/
+```
+
+Este repositorio incluye `.gitignore` para evitar subir esos ficheros.
+
+Si alguna vez Git ya había empezado a trackear un fichero sensible, no basta con `.gitignore`. Hay que sacarlo del índice:
+
+```powershell
+git rm --cached .env
+git rm --cached data/tokens.json
+git commit -m "Elimina credenciales locales del repositorio"
+```
+
+Si subiste tokens reales accidentalmente, revócalos desde Spotify/Google y vuelve a conectar la aplicación.
+
+---
+
+## 13. Solución de problemas
+
+### El puerto 5050 no responde
+
+Comprueba si hay proceso escuchando:
+
+```powershell
+netstat -ano | findstr :5050
+```
+
+También puedes probar:
+
+```powershell
+Test-NetConnection 127.0.0.1 -Port 5050
+```
+
+### No existe `.venv`
+
+Ejecuta:
+
+```bat
+install.bat
+```
+
+### Spotify no conecta
+
+Revisa:
+
+```env
+SPOTIFY_CLIENT_ID=tu_spotify_client_id
+```
+
+Y en Spotify Developer Dashboard:
+
+```txt
+http://127.0.0.1:5050/auth/spotify/callback
+```
+
+### Google no conecta
+
+Revisa:
+
+```env
+GOOGLE_CLIENT_ID=tu_google_client_id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=tu_google_client_secret
+```
+
+Y en Google Cloud:
+
+```txt
+Authorized JavaScript origins:
+http://127.0.0.1:5050
+
+Authorized redirect URIs:
+http://127.0.0.1:5050/auth/google/callback
+```
+
+### La app está en modo Testing en Google
+
+Añade tu cuenta en:
+
+```txt
+OAuth consent screen → Test users
+```
+
+### Spotify pide reconectar
+
+Desde `/setup`, pulsa:
 
 ```txt
 Limpiar token Spotify
 ```
 
-Después pulsa:
-
-```txt
-Conectar Spotify
-```
-
-### Spotify no reproduce
-
-Comprueba que tienes Spotify abierto en el PC o en algún dispositivo de tu cuenta. El dashboard necesita un dispositivo activo de Spotify Connect para controlar reproducción.
-
-### Google muestra `redirect_uri_mismatch`
-
-Revisa que el Redirect URI configurado en Google sea exactamente:
-
-```txt
-http://127.0.0.1:5050/auth/google/callback
-```
-
-`localhost` y `127.0.0.1` no son equivalentes para OAuth. Usa exactamente `127.0.0.1`.
-
-### Google muestra `access_denied` porque la app está en pruebas
-
-Añade tu cuenta de Gmail como **Test user / Usuario de prueba** en la pantalla de consentimiento OAuth.
-
-### He cambiado el puerto
-
-Si cambias `PORT=5050` en `.env`, también debes cambiar las redirecciones en Spotify y Google. Por ejemplo, si usas `PORT=5051`:
-
-```txt
-http://127.0.0.1:5051/auth/spotify/callback
-http://127.0.0.1:5051/auth/google/callback
-http://127.0.0.1:5051
-```
+Después vuelve a conectar Spotify.
 
 ---
 
+## 14. Seguridad
 
-## 10. Archivos principales
-
-- `app.py`: backend Flask local.
-- `static/dashboard.html`: interfaz de XENEON.
-- `install.bat`: instala entorno virtual y dependencias.
-- `start_dashboard.bat`: arranque manual para pruebas.
-- `run_dashboard.pyw`: launcher sin consola para autoarranque.
-- `install_autostart_registry.bat`: instala autoarranque en el Registro.
-- `uninstall_autostart_registry.bat`: elimina autoarranque.
-- `stop_dashboard.bat`: detiene el backend local.
-- `.env.example`: plantilla de configuración.
+- No subas `.env` con credenciales reales.
+- No subas `data/tokens.json`.
+- No compartas `GOOGLE_CLIENT_SECRET`.
+- Si publicas el proyecto en GitHub, revisa siempre `git status` antes de hacer commit.
+- Si se filtra un token, revócalo y genera uno nuevo.
 
 ---
 
-## 11. Notas de seguridad
+## 15. Licencia
 
-Este proyecto está pensado para uso local en tu PC. Por defecto escucha solo en:
-
-```txt
-127.0.0.1
-```
+Añade aquí la licencia que quieras aplicar al proyecto antes de publicarlo oficialmente.

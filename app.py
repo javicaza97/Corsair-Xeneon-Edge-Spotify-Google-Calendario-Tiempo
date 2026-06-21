@@ -18,6 +18,10 @@ DATA_DIR.mkdir(exist_ok=True)
 TOKENS_FILE = DATA_DIR / "tokens.json"
 STATE_FILE = DATA_DIR / "oauth_states.json"
 SPOTIFY_PLAYLIST_CACHE_FILE = DATA_DIR / "spotify_playlists_cache.json"
+SETTINGS_FILE = DATA_DIR / "settings.json"
+PINNED_PLAYLISTS_FILE = DATA_DIR / "pinned_playlists.json"
+PLAYLIST_ORDER_FILE = DATA_DIR / "playlist_order.json"
+SPOTIFY_ERRORS_LOG_FILE = DATA_DIR / "spotify_errors.log"
 SPOTIFY_PLAYLIST_CACHE_SECONDS = int(os.getenv("SPOTIFY_PLAYLIST_CACHE_SECONDS", "900"))
 
 load_dotenv(BASE_DIR / ".env")
@@ -35,7 +39,10 @@ SPOTIFY_SCOPES = " ".join([
     "user-read-currently-playing",
     "playlist-read-private",
     "playlist-read-collaborative",
+    "playlist-modify-private",
+    "playlist-modify-public",
     "user-library-read",
+    "user-library-modify",
     "user-read-email",
     "user-read-private",
     "streaming",
@@ -68,6 +75,23 @@ def save_tokens(tokens):
     _write_json(TOKENS_FILE, tokens)
 
 
+def load_settings():
+    settings = _read_json(SETTINGS_FILE, {})
+    if not isinstance(settings, dict):
+        settings = {}
+    return settings
+
+
+def save_settings(settings):
+    if not isinstance(settings, dict):
+        settings = {}
+    _write_json(SETTINGS_FILE, settings)
+
+
+def current_weather_city():
+    return (load_settings().get("weather_city") or DEFAULT_CITY or "Móstoles").strip()
+
+
 def load_states():
     states = _read_json(STATE_FILE, {})
     # limpia estados antiguos
@@ -91,6 +115,19 @@ def json_error(message, status=400, detail=None):
     if detail is not None:
         payload["detail"] = detail
     return jsonify(payload), status
+
+
+def log_spotify_error(context, data):
+    """Guarda errores de Spotify para depurar 403/429 sin exponer tokens."""
+    try:
+        safe = dict(data or {})
+        safe.pop("access_token", None)
+        safe.pop("refresh_token", None)
+        line = json.dumps({"at": datetime.now().isoformat(timespec="seconds"), "context": context, **safe}, ensure_ascii=False)
+        with SPOTIFY_ERRORS_LOG_FILE.open("a", encoding="utf-8") as f:
+            f.write(line + "\n")
+    except Exception:
+        pass
 
 
 
@@ -210,6 +247,9 @@ def auth_spotify():
         "state": state,
         "code_challenge_method": "S256",
         "code_challenge": pkce_challenge(verifier),
+        # Fuerza a Spotify a mostrar de nuevo la pantalla de permisos.
+        # Es importante cuando añadimos scopes nuevos como playlist-modify-private/public.
+        "show_dialog": "true",
     }
     return redirect("https://accounts.spotify.com/authorize?" + urlencode(params))
 
@@ -241,6 +281,7 @@ def auth_spotify_callback():
         "refresh_token": d.get("refresh_token"),
         "expires_at": time.time() + int(d.get("expires_in", 3600)) - 60,
         "refresh_token_issued_at": int(time.time()),
+        "scope": d.get("scope") or SPOTIFY_SCOPES,
     }
     save_tokens(tokens)
     return success_page("Spotify conectado", "Ya puedes cerrar esta pestaña. XENEON usará el backend local para Spotify.")
@@ -301,6 +342,8 @@ def spotify_refresh():
         sp["refresh_token_issued_at"] = int(time.time())
     else:
         sp.setdefault("refresh_token_issued_at", int(time.time()))
+    if d.get("scope"):
+        sp["scope"] = d.get("scope")
     sp["expires_at"] = time.time() + int(d.get("expires_in", 3600)) - 60
     tokens["spotify"] = sp
     tokens.pop("spotify_auth_error", None)
@@ -418,7 +461,8 @@ def api_status():
         "spotify_refresh_token_days_left_estimate": days_left,
         "google_configured": bool(GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET),
         "google_connected": bool((tokens.get("google") or {}).get("refresh_token")),
-        "default_city": DEFAULT_CITY,
+        "default_city": current_weather_city(),
+        "weather_city": current_weather_city(),
     })
 
 
@@ -471,6 +515,517 @@ def api_spotify_transfer():
 
 
 
+
+
+@app.route("/api/spotify/liked")
+def api_spotify_liked():
+    track_id = (request.args.get("track_id") or "").strip()
+    track_uri = (request.args.get("track_uri") or "").strip()
+    if not track_uri and track_id:
+        track_uri = "spotify:track:" + track_id
+    if not track_uri.startswith("spotify:track:"):
+        return json_error("Falta track_id", 400)
+    # Endpoint nuevo de biblioteca (el antiguo /me/tracks/contains está deprecado).
+    data, status, err = spotify_api("/me/library/contains", params={"uris": track_uri})
+    if status == 401:
+        return json_error("Spotify no conectado", 401)
+    if status and status >= 400:
+        return json_error("No se pudo comprobar Me gusta", status, err)
+    liked = bool(data[0]) if isinstance(data, list) and data else False
+    return jsonify({"ok": True, "liked": liked, "track_id": track_uri.split(":")[-1]})
+
+
+@app.route("/api/spotify/like", methods=["POST"])
+def api_spotify_like():
+    body = request.get_json(silent=True) or {}
+    track_uri = (body.get("track_uri") or "").strip()
+    track_id = (body.get("track_id") or "").strip()
+    if not track_uri and track_id:
+        track_uri = "spotify:track:" + track_id
+    if not track_uri.startswith("spotify:track:"):
+        return json_error("No hay canción seleccionada", 400)
+
+    target_liked = body.get("liked")
+    if target_liked is None:
+        current, status, err = spotify_api("/me/library/contains", params={"uris": track_uri})
+        if status == 401:
+            return json_error("Spotify no conectado", 401)
+        if status and status >= 400:
+            return json_error("No se pudo comprobar Me gusta", status, err)
+        target_liked = not (bool(current[0]) if isinstance(current, list) and current else False)
+
+    # Guardar/quitar de "Canciones que me gustan" con el endpoint nuevo de biblioteca.
+    method = "PUT" if bool(target_liked) else "DELETE"
+    _, status, err = spotify_api("/me/library", method, params={"uris": track_uri})
+    if status == 401:
+        return json_error("Spotify no conectado", 401)
+    if status == 403:
+        return json_error(
+            "Spotify ha rechazado guardar el Me gusta",
+            403,
+            {"error": {"message": "Forbidden de Spotify. Si acabas de añadir permisos, limpia el token en /setup y reconecta Spotify para conceder user-library-modify."}},
+        )
+    if status in (200, 201, 202, 204):
+        return jsonify({"ok": True, "liked": bool(target_liked), "track_id": track_uri.split(":")[-1]})
+    return json_error("No se pudo actualizar Me gusta", status or 500, err)
+
+
+@app.route("/api/spotify/liked-tracks")
+def api_spotify_liked_tracks():
+    """Lista las canciones de 'Canciones que me gustan' (biblioteca del usuario)."""
+    tracks = []
+    total = 0
+    offset = 0
+    last_err = None
+    for _ in range(20):  # hasta 1000 canciones
+        data, status, err = spotify_api("/me/tracks", params={"limit": 50, "offset": offset, "market": "ES"})
+        if status == 401:
+            return json_error("Spotify no conectado", 401)
+        if not data or status >= 400:
+            last_err = err
+            break
+        total = data.get("total") or total
+        items = data.get("items") or []
+        for item in items:
+            tr = (item or {}).get("track") or {}
+            if tr and tr.get("type") == "track":
+                simple = simplify_track(tr)
+                if simple and simple.get("uri"):
+                    tracks.append(simple)
+        if not data.get("next") or not items:
+            break
+        offset += 50
+    if not tracks and last_err:
+        return json_error("No se pudieron leer tus Me gusta", 500, last_err)
+    return jsonify({"ok": True, "tracks": tracks, "total": total or len(tracks)})
+
+
+@app.route("/api/spotify/resolve-playlist")
+def api_spotify_resolve_playlist():
+    """Resuelve una playlist a partir de su enlace, URI o ID y devuelve sus metadatos.
+    Sirve para fijar listas que no aparecen en /me/playlists (p.ej. Radar de novedades),
+    aunque Spotify ya no deje leer sus canciones por API: el frontend usará el embed.
+    """
+    raw = (request.args.get("id") or "").strip()
+    # Acepta: URL completa, spotify:playlist:ID o el ID pelado. Quita query (?si=...).
+    pid = raw.split("?")[0].rstrip("/").split("/")[-1].split(":")[-1]
+    if not pid:
+        return json_error("Falta el enlace o id de la playlist", 400)
+    # 1) Intento normal por la Web API (vale para listas de usuario).
+    data, status, err = spotify_api(
+        f"/playlists/{quote(pid)}",
+        params={"fields": "id,uri,name,images,public,collaborative,owner(display_name),tracks(total)"},
+    )
+    if status == 401:
+        return json_error("Spotify no conectado", 401)
+
+    if data and status < 400:
+        images = (data or {}).get("images") or []
+        pl = {
+            "id": data.get("id") or pid,
+            "uri": data.get("uri") or ("spotify:playlist:" + pid),
+            "name": data.get("name") or "Playlist",
+            "image": images[0]["url"] if images else "",
+            "public": data.get("public"),
+            "collaborative": bool(data.get("collaborative")),
+            "tracks_total": ((data.get("tracks") or {}).get("total")),
+        }
+        return jsonify({"ok": True, "playlist": pl})
+
+    # 2) Fallback oEmbed: las listas propias de Spotify (Radar de novedades, Discover
+    #    Weekly, editoriales 37i9...) devuelven 404 en la Web API, pero oEmbed sí da
+    #    nombre e imagen sin auth. No podremos leer las canciones por API, pero el
+    #    frontend la abrirá con el reproductor incrustado.
+    name = "Playlist de Spotify"
+    image = ""
+    try:
+        oe = requests.get(
+            "https://open.spotify.com/oembed",
+            params={"url": f"https://open.spotify.com/playlist/{pid}"},
+            timeout=12,
+        )
+        if oe.ok:
+            j = oe.json()
+            name = j.get("title") or name
+            image = j.get("thumbnail_url") or ""
+        elif oe.status_code == 404:
+            return json_error("No se encontró esa playlist. ¿El enlace es correcto y es de una playlist (no un álbum o perfil)?", 404)
+    except Exception:
+        pass
+
+    pl = {
+        "id": pid,
+        "uri": "spotify:playlist:" + pid,
+        "name": name,
+        "image": image,
+        "public": True,
+        "collaborative": False,
+        "tracks_total": None,
+    }
+    return jsonify({"ok": True, "playlist": pl})
+
+
+def load_pinned_playlists():
+    data = _read_json(PINNED_PLAYLISTS_FILE, [])
+    return data if isinstance(data, list) else []
+
+
+def save_pinned_playlists(items):
+    _write_json(PINNED_PLAYLISTS_FILE, items)
+
+
+@app.route("/api/spotify/pinned", methods=["GET"])
+def api_spotify_pinned_list():
+    return jsonify({"ok": True, "playlists": load_pinned_playlists()})
+
+
+@app.route("/api/spotify/pinned", methods=["POST"])
+def api_spotify_pinned_add():
+    b = request.get_json(silent=True) or {}
+    pid = (b.get("id") or "").strip()
+    if not pid:
+        return json_error("Falta la playlist", 400)
+    item = {
+        "id": pid,
+        "uri": b.get("uri") or ("spotify:playlist:" + pid),
+        "name": b.get("name") or "Playlist",
+        "image": b.get("image") or "",
+        "public": b.get("public"),
+        "collaborative": bool(b.get("collaborative")),
+        "tracks_total": b.get("tracks_total"),
+    }
+    items = [x for x in load_pinned_playlists() if x.get("id") != pid]
+    items.insert(0, item)
+    save_pinned_playlists(items)
+    return jsonify({"ok": True, "playlists": items})
+
+
+@app.route("/api/spotify/pinned/<pid>", methods=["DELETE"])
+def api_spotify_pinned_remove(pid):
+    items = [x for x in load_pinned_playlists() if x.get("id") != (pid or "").strip()]
+    save_pinned_playlists(items)
+    return jsonify({"ok": True, "playlists": items})
+
+
+@app.route("/api/spotify/liked-count")
+def api_spotify_liked_count():
+    data, status, err = spotify_api("/me/tracks", params={"limit": 1})
+    if status == 401:
+        return json_error("Spotify no conectado", 401)
+    if not data or status >= 400:
+        return json_error("No se pudo leer el número de Me gusta", status or 500, err)
+    return jsonify({"ok": True, "total": (data or {}).get("total")})
+
+
+@app.route("/api/spotify/follow-playlist", methods=["POST", "DELETE"])
+def api_spotify_follow_playlist():
+    """Seguir / dejar de seguir una playlist (añadir o quitar de tu biblioteca).
+    Tras febrero 2026 esto va por el endpoint genérico PUT/DELETE /me/library.
+    """
+    b = request.get_json(silent=True) or {}
+    uri = (b.get("uri") or "").strip()
+    pid = (b.get("id") or "").strip()
+    if not uri and pid:
+        uri = "spotify:playlist:" + pid
+    if not uri.startswith("spotify:playlist:"):
+        return json_error("Falta la playlist", 400)
+    action = b.get("action") or ("remove" if request.method == "DELETE" else "add")
+    method = "PUT" if action == "add" else "DELETE"
+    _, status, err = spotify_api("/me/library", method, params={"uris": uri})
+    if status == 401:
+        return json_error("Spotify no conectado", 401)
+    if status == 403:
+        return json_error("Spotify ha rechazado la operación. Si acabas de añadir permisos, reconecta en /setup.", 403, err)
+    if status in (200, 201, 202, 204):
+        # Invalidamos la cache de playlists para que el cambio se vea al recargar.
+        try:
+            _write_json(SPOTIFY_PLAYLIST_CACHE_FILE, {})
+        except Exception:
+            pass
+        return jsonify({"ok": True, "followed": action == "add"})
+    return json_error("No se pudo actualizar la biblioteca", status or 500, err)
+
+
+@app.route("/api/spotify/playlist-order", methods=["GET"])
+def api_spotify_playlist_order_get():
+    data = _read_json(PLAYLIST_ORDER_FILE, [])
+    return jsonify({"ok": True, "order": data if isinstance(data, list) else []})
+
+
+@app.route("/api/spotify/playlist-order", methods=["POST"])
+def api_spotify_playlist_order_set():
+    b = request.get_json(silent=True) or {}
+    order = b.get("order")
+    if not isinstance(order, list):
+        return json_error("Orden inválido", 400)
+    order = [str(x) for x in order if x]
+    _write_json(PLAYLIST_ORDER_FILE, order)
+    return jsonify({"ok": True, "order": order})
+
+
+@app.route("/api/spotify/addable-playlists")
+def api_spotify_addable_playlists():
+    me, status, err = spotify_api("/me")
+    if status == 401:
+        return json_error("Spotify no conectado", 401)
+    if not me or status >= 400:
+        return json_error("No se pudo leer el usuario de Spotify", status or 500, err)
+    user_id = me.get("id")
+
+    playlists = []
+    offset = 0
+    limit = 50
+    for _ in range(20):
+        data, status, err = spotify_api("/me/playlists", params={"limit": limit, "offset": offset})
+        if status == 401:
+            return json_error("Spotify no conectado", 401)
+        if not data or status >= 400:
+            return json_error("No se pudieron leer tus playlists", status or 500, err)
+        items = data.get("items") or []
+        for p in items:
+            if not p:
+                continue
+            owner = p.get("owner") or {}
+            owner_id = owner.get("id") or ""
+            collaborative = bool(p.get("collaborative"))
+            # Para evitar Forbidden, aquí mostramos solo playlists propiedad de la cuenta autenticada.
+            # Las colaborativas pueden aparecer en /me/playlists, pero Spotify no siempre permite modificarlas
+            # vía API según permisos/estado de la lista.
+            if owner_id != user_id:
+                continue
+            images = p.get("images") or []
+            tracks_total = ((p.get("tracks") or {}).get("total"))
+            is_public = p.get("public")
+            if collaborative:
+                visibility = "colaborativa"
+            elif is_public is False:
+                visibility = "privada"
+            elif is_public is True:
+                visibility = "pública"
+            else:
+                visibility = "playlist"
+            pl_id = p.get("id") or ""
+            playlists.append({
+                "id": pl_id,
+                "uri": p.get("uri") or (f"spotify:playlist:{pl_id}" if pl_id else ""),
+                "name": p.get("name") or "Playlist",
+                "image": images[0]["url"] if images else "",
+                "tracks_total": tracks_total,
+                "owner": owner.get("display_name") or owner_id,
+                "public": is_public,
+                "collaborative": collaborative,
+                "visibility": visibility,
+            })
+        if not data.get("next") or not items:
+            break
+        offset += limit
+
+    def sort_key(p):
+        # Privadas primero, luego colaborativas, luego públicas.
+        visibility_rank = 0 if p.get("public") is False else 1 if p.get("collaborative") else 2
+        return (visibility_rank, (p.get("name") or "").lower())
+
+    playlists.sort(key=sort_key)
+    return jsonify({"ok": True, "playlists": playlists})
+
+
+@app.route("/api/spotify/add-to-playlist", methods=["POST"])
+def api_spotify_add_to_playlist():
+    body = request.get_json(silent=True) or {}
+    playlist_id = (body.get("playlist_id") or "").strip()
+    track_uri = (body.get("track_uri") or "").strip()
+    if not playlist_id:
+        return json_error("Falta playlist_id", 400)
+    if not track_uri or not track_uri.startswith("spotify:track:"):
+        return json_error("No hay canción válida seleccionada", 400)
+
+    me, me_status, me_err = spotify_api("/me")
+    if me_status == 401:
+        return json_error("Spotify no conectado", 401)
+    if not me or me_status >= 400:
+        return json_error("No se pudo leer el usuario de Spotify", me_status or 500, me_err)
+    user_id = (me or {}).get("id")
+
+    playlist, pl_status, pl_err = spotify_api(
+        f"/playlists/{quote(playlist_id)}",
+        params={"fields": "id,name,public,collaborative,owner(id,display_name)"},
+    )
+    if pl_status == 401:
+        return json_error("Spotify no conectado", 401)
+    if pl_status and pl_status >= 400:
+        return json_error("No se pudo comprobar si la playlist es editable", pl_status or 500, pl_err)
+
+    owner = (playlist or {}).get("owner") or {}
+    owner_id = owner.get("id") or ""
+    playlist_name = (playlist or {}).get("name") or "playlist"
+    playlist_public = (playlist or {}).get("public")
+    collaborative = bool((playlist or {}).get("collaborative"))
+
+    # Evitamos falsas esperanzas: desde la API solo intentamos modificar playlists tuyas
+    # o colaborativas. Aun así, Spotify puede devolver 403 por permisos/restricciones.
+    if owner_id != user_id and not collaborative:
+        return json_error(
+            "Spotify no permite añadir canciones a esa playlist desde la API",
+            403,
+            {"error": {"message": "Esa playlist no es tuya ni colaborativa. Prueba con una playlist creada por tu cuenta."}},
+        )
+
+    token_scopes = set(str((load_tokens().get("spotify") or {}).get("scope") or "").split())
+    missing_scopes = []
+    if playlist_public is True and "playlist-modify-public" not in token_scopes:
+        missing_scopes.append("playlist-modify-public")
+    if playlist_public is False and "playlist-modify-private" not in token_scopes:
+        missing_scopes.append("playlist-modify-private")
+    # Si Spotify no dice si es pública, exigimos al menos uno de los dos permisos de escritura.
+    if playlist_public is None and not ({"playlist-modify-private", "playlist-modify-public"} & token_scopes):
+        missing_scopes.extend(["playlist-modify-private", "playlist-modify-public"])
+    if missing_scopes:
+        return json_error(
+            "Faltan permisos de Spotify para modificar playlists",
+            403,
+            {"error": {"message": "Faltan permisos en el token actual: " + ", ".join(sorted(set(missing_scopes))) + ". Limpia token en /setup y reconecta Spotify."}, "granted_scopes": sorted(token_scopes)},
+        )
+
+    attempts = []
+
+    # Endpoint actual: body JSON {uris:[...]}
+    data, status, err = spotify_api(f"/playlists/{quote(playlist_id)}/tracks", "POST", {"uris": [track_uri]})
+    attempts.append({"endpoint": "POST /playlists/{id}/tracks json", "status": status, "error": err})
+    if status in (200, 201, 202, 204):
+        return jsonify({"ok": True, "snapshot_id": (data or {}).get("snapshot_id"), "method": "json"})
+
+    # Fallback: algunos clientes/errores funcionan mejor mandando uris como query param.
+    data2, status2, err2 = spotify_api(f"/playlists/{quote(playlist_id)}/tracks", "POST", None, params={"uris": track_uri})
+    attempts.append({"endpoint": "POST /playlists/{id}/tracks?uris=...", "status": status2, "error": err2})
+    if status2 in (200, 201, 202, 204):
+        return jsonify({"ok": True, "snapshot_id": (data2 or {}).get("snapshot_id"), "method": "query"})
+
+    # Fallback legacy/deprecated. Spotify lo mantiene en algunas cuentas, en otras falla igual.
+    data3, status3, err3 = spotify_api(f"/users/{quote(user_id or '')}/playlists/{quote(playlist_id)}/tracks", "POST", {"uris": [track_uri]})
+    attempts.append({"endpoint": "POST /users/{user_id}/playlists/{id}/tracks json legacy", "status": status3, "error": err3})
+    if status3 in (200, 201, 202, 204):
+        return jsonify({"ok": True, "snapshot_id": (data3 or {}).get("snapshot_id"), "method": "legacy"})
+
+    final_status = status3 or status2 or status or 500
+    final_err = err3 or err2 or err or {}
+    debug = {
+        "playlist_id": playlist_id,
+        "playlist_name": playlist_name,
+        "playlist_public": playlist_public,
+        "collaborative": collaborative,
+        "owner_id": owner_id,
+        "user_id": user_id,
+        "granted_scopes": sorted(token_scopes),
+        "track_uri_prefix": track_uri[:32],
+        "attempts": attempts,
+    }
+    log_spotify_error("add_to_playlist_failed", debug)
+
+    if final_status == 403:
+        return json_error(
+            "Spotify ha rechazado añadir la canción a esa playlist",
+            403,
+            {
+                "error": {
+                    "message": "Forbidden de Spotify. El token tiene scopes: " + (", ".join(sorted(token_scopes)) or "ninguno") + ". Si ya reconectaste y falla incluso en una playlist creada por ti, parece una restricción/error del lado de Spotify para escritura de playlists en tu app/cuenta. Revisa data\\spotify_errors.log."
+                },
+                "spotify_debug": debug,
+                "spotify_detail": final_err,
+            },
+        )
+
+    return json_error("No se pudo añadir la canción a esa playlist", final_status, {"spotify_debug": debug, "spotify_detail": final_err})
+
+
+@app.route("/api/spotify/remove-from-playlist", methods=["POST", "DELETE"])
+def api_spotify_remove_from_playlist():
+    body = request.get_json(silent=True) or {}
+    playlist_id = (body.get("playlist_id") or "").strip()
+    track_uri = (body.get("track_uri") or "").strip()
+    if not playlist_id:
+        return json_error("Falta playlist_id", 400)
+    if not track_uri or not track_uri.startswith("spotify:track:"):
+        return json_error("No hay canción válida seleccionada", 400)
+
+    # Spotify elimina por URI. Si la canción aparece varias veces, elimina una ocurrencia.
+    payload = {"tracks": [{"uri": track_uri}]}
+    data, status, err = spotify_api(f"/playlists/{quote(playlist_id)}/tracks", "DELETE", payload)
+    if status == 401:
+        return json_error("Spotify no conectado", 401)
+    if status in (200, 201, 202, 204):
+        return jsonify({"ok": True, "snapshot_id": (data or {}).get("snapshot_id")})
+    return json_error("No se pudo quitar la canción de esa playlist", status or 500, err)
+
+
+@app.route("/api/spotify/search")
+def api_spotify_search():
+    q = (request.args.get("q") or "").strip()
+    if len(q) < 2:
+        return jsonify({"ok": True, "results": []})
+
+    data, status, err = spotify_api("/search", params={
+        "q": q,
+        "type": "track,artist,playlist",
+        "limit": 8,
+        "market": "ES",
+    })
+    if status == 401:
+        return json_error("Spotify no conectado", 401)
+    if not data or status >= 400:
+        return json_error("No se pudo buscar en Spotify", status or 500, err)
+
+    results = []
+
+    for tr in ((data.get("tracks") or {}).get("items") or []):
+        simple = simplify_track(tr)
+        if simple and simple.get("uri"):
+            results.append({
+                "type": "track",
+                "id": simple.get("id"),
+                "uri": simple.get("uri"),
+                "name": simple.get("name") or "Canción",
+                "subtitle": simple.get("artists") or simple.get("album") or "Canción",
+                "image": simple.get("image") or "",
+                "duration_ms": simple.get("duration_ms") or 0,
+            })
+
+    for ar in ((data.get("artists") or {}).get("items") or []):
+        images = ar.get("images") or []
+        artist_id = ar.get("id") or ""
+        results.append({
+            "type": "artist",
+            "id": artist_id,
+            "uri": ar.get("uri") or (f"spotify:artist:{artist_id}" if artist_id else ""),
+            "name": ar.get("name") or "Artista",
+            "subtitle": "Artista",
+            "image": images[0]["url"] if images else "",
+        })
+
+    for pl in ((data.get("playlists") or {}).get("items") or []):
+        if not pl:
+            continue
+        images = pl.get("images") or []
+        owner = pl.get("owner") or {}
+        pl_id = pl.get("id") or ""
+        tracks_total = (pl.get("tracks") or {}).get("total")
+        subtitle = "Playlist"
+        if tracks_total is not None:
+            subtitle += f" · {tracks_total} canciones"
+        if owner.get("display_name") or owner.get("id"):
+            subtitle += f" · {owner.get('display_name') or owner.get('id')}"
+        results.append({
+            "type": "playlist",
+            "id": pl_id,
+            "uri": pl.get("uri") or (f"spotify:playlist:{pl_id}" if pl_id else ""),
+            "name": pl.get("name") or "Playlist",
+            "subtitle": subtitle,
+            "image": images[0]["url"] if images else "",
+            "tracks_total": tracks_total,
+        })
+
+    return jsonify({"ok": True, "results": results})
+
+
 @app.route("/api/spotify/playlists")
 def api_spotify_playlists():
     """Lista playlists sin disparar el rate-limit de Spotify.
@@ -489,10 +1044,16 @@ def api_spotify_playlists():
         except Exception:
             return None
 
+    me_data, me_status, _ = spotify_api("/me")
+    user_id = (me_data or {}).get("id") if me_status and me_status < 400 else ""
+
     def normalize_playlist(p):
         p = p or {}
         images = p.get("images") or []
         owner = p.get("owner") or {}
+        owner_id = owner.get("id") or ""
+        collaborative = bool(p.get("collaborative"))
+        can_modify = bool(user_id and (owner_id == user_id or collaborative))
         pl_id = p.get("id") or ""
         tracks_total = as_int(((p.get("tracks") or {}).get("total")))
         # Compatibilidad con el HTML antiguo, por si llega items.total.
@@ -505,7 +1066,10 @@ def api_spotify_playlists():
             "image": images[0]["url"] if images else "",
             "tracks_total": tracks_total,
             "tracks_count_known": tracks_total is not None,
-            "owner": owner.get("display_name") or owner.get("id") or "",
+            "owner": owner.get("display_name") or owner_id or "",
+            "public": p.get("public"),
+            "collaborative": collaborative,
+            "can_modify": can_modify,
             "external_url": ((p.get("external_urls") or {}).get("spotify")),
         }
 
@@ -661,13 +1225,21 @@ def spotify_current_snapshot(max_wait_seconds=0):
 def api_spotify_play():
     body = request.get_json(silent=True) or {}
     payload = {}
-    if body.get("context_uri"):
-        payload["context_uri"] = body["context_uri"]
-    if body.get("track_uri"):
+    uris = body.get("uris")
+    if isinstance(uris, list) and uris:
+        # Reproducir una lista explícita de pistas (p.ej. "Canciones que me gustan",
+        # que no es una playlist con contexto fiable). Máximo recomendado por Spotify.
+        payload["uris"] = [u for u in uris if isinstance(u, str) and u.startswith("spotify:track:")][:50]
+        if body.get("offset_position") is not None:
+            payload["offset"] = {"position": int(body.get("offset_position") or 0)}
+    else:
         if body.get("context_uri"):
-            payload["offset"] = {"uri": body["track_uri"]}
-        else:
-            payload["uris"] = [body["track_uri"]]
+            payload["context_uri"] = body["context_uri"]
+        if body.get("track_uri"):
+            if body.get("context_uri"):
+                payload["offset"] = {"uri": body["track_uri"]}
+            else:
+                payload["uris"] = [body["track_uri"]]
     if body.get("position_ms") is not None:
         payload["position_ms"] = int(body.get("position_ms") or 0)
 
@@ -918,6 +1490,53 @@ def api_calendar_create_event():
     return json_error("No se pudo crear el evento", status or 500, err)
 
 
+@app.route("/api/calendar/events/<path:event_id>", methods=["PUT", "PATCH"])
+def api_calendar_update_event(event_id):
+    b = request.get_json(silent=True) or {}
+    title = (b.get("title") or "").strip()
+    if not title:
+        return json_error("El título es obligatorio", 400)
+
+    all_day = bool(b.get("all_day"))
+    if all_day:
+        start_date = b.get("date")
+        if not start_date:
+            return json_error("La fecha es obligatoria", 400)
+        end_date = (datetime.fromisoformat(start_date) + timedelta(days=1)).date().isoformat()
+        # Al pasar de 'con hora' a 'todo el día' hay que limpiar dateTime/timeZone,
+        # si no Google los mantiene mezclados y devuelve "Invalid start time".
+        payload = {
+            "summary": title,
+            "start": {"date": start_date, "dateTime": None, "timeZone": None},
+            "end": {"date": end_date, "dateTime": None, "timeZone": None},
+        }
+    else:
+        start = b.get("start")
+        end = b.get("end")
+        if not start or not end:
+            return json_error("Inicio y fin son obligatorios", 400)
+        # Al pasar de 'todo el día' a 'con hora' hay que limpiar el campo date,
+        # si no Google deja date + dateTime a la vez y devuelve "Invalid start time".
+        payload = {
+            "summary": title,
+            "start": {"dateTime": start, "timeZone": "Europe/Madrid", "date": None},
+            "end": {"dateTime": end, "timeZone": "Europe/Madrid", "date": None},
+        }
+
+    # Mandamos campos vacíos si el usuario los borra para que Google los limpie.
+    payload["location"] = (b.get("location") or "").strip()
+    payload["description"] = (b.get("description") or "").strip()
+
+    data, status, err = google_api(
+        f"/calendars/primary/events/{quote(event_id, safe='')}",
+        "PATCH",
+        payload,
+    )
+    if status in (200, 201):
+        return jsonify({"ok": True, "event": data})
+    return json_error("No se pudo actualizar el evento", status or 500, err)
+
+
 @app.route("/api/calendar/events/<path:event_id>", methods=["DELETE"])
 def api_calendar_delete_event(event_id):
     data, status, err = google_api(f"/calendars/primary/events/{quote(event_id, safe='')}", "DELETE")
@@ -939,7 +1558,8 @@ WEATHER_CODES = {
 
 @app.route("/api/weather")
 def api_weather():
-    city = request.args.get("city") or DEFAULT_CITY
+    city = (request.args.get("city") or current_weather_city()).strip()
+    save_city = request.args.get("save") == "1"
     try:
         geo = requests.get("https://geocoding-api.open-meteo.com/v1/search", params={
             "name": city, "count": 1, "language": "es", "format": "json"
@@ -948,6 +1568,12 @@ def api_weather():
         if not results:
             return json_error("Ciudad no encontrada", 404)
         g = results[0]
+        if save_city:
+            settings = load_settings()
+            settings["weather_city"] = g.get("name") or city
+            settings["weather_country"] = g.get("country_code") or ""
+            settings["weather_updated_at"] = int(time.time())
+            save_settings(settings)
         lat, lon = g["latitude"], g["longitude"]
         forecast = requests.get("https://api.open-meteo.com/v1/forecast", params={
             "latitude": lat,
